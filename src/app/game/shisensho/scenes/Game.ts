@@ -26,19 +26,45 @@ export class Game extends Phaser.Scene {
             fontFamily: "OpenSans"
         };
 
-        let grid = new Grid(this, 7, 6)
+        let grid = new Grid(this, 13, 8)
 
         grid.x = w / 2;
         grid.y = h / 2;
 
-        let debug = new Debugger(this);
-        let rect = new Phaser.Geom.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
-        rect.width -= 90;
-        rect.x += 45;
-        rect.height -= 90;
-        rect.y += 45;
+        grid.onFinished = () => {
+            this.scene.launch('end', { nbtiles: grid.size.cols * grid.size.rows });
+        }
 
-        // debug.rectangle(rect);
+        // Debug - Shuffle the board
+        this.input.keyboard.on('keydown-A', () => {
+            grid.shuffleboard();
+
+            grid.doForAllTiles(t => t.hideImage());
+
+            this.time.addEvent({
+                delay: 500,
+                callback: () => {
+                    grid.updateBoard();
+                    grid.doForAllTiles(t => t.showImage());
+                }
+            })
+        })
+
+        // Debug - Display hint
+        let graphics: Phaser.GameObjects.Graphics;
+        this.input.keyboard.on('keydown-Z', () => {
+            if (grid.interactive) {
+                let hint = grid.getHints(false)[0];
+                if (graphics) {
+                    graphics.destroy();
+                }
+                graphics = grid.displayPath(hint.path, hint.t1, hint.t2);
+
+                grid.onNextMatch = () => {
+                    graphics.destroy();
+                }
+            }
+        })
 
         // let paths = grid.getAllPossibleMoves();
         // console.log(paths);

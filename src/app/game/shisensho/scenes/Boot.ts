@@ -1,5 +1,5 @@
-export var ratio: number;
-export var bounds: Phaser.Geom.Rectangle;
+export let ratio: number;
+export let bounds: Phaser.Geom.Rectangle;
 
 export class Boot extends Phaser.Scene {
 
@@ -55,8 +55,8 @@ export class Boot extends Phaser.Scene {
 
 
         // this.scene.start('gameui');
-        // this.scene.start('game');
-        this.scene.start('end');
+        this.scene.start('game');
+        // this.scene.start('end');
     }
 
 }

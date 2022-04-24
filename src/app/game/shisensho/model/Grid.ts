@@ -27,6 +27,16 @@ export class Grid extends Phaser.GameObjects.Container {
      */
     public tiles: Array<Array<Tile>> = [];
 
+    /** Callback method when the grid is finished */
+    onFinished: () => void;
+
+    /** TODO Callback method when a match is done. Called for each match */
+    onMatch: () => void;
+
+    /** Callback method when a match is done. Called only once, for the next match */
+    onNextMatch: () => void;
+
+
     static TILES_TYPES: Map<string, number> = new Map<string, number>([
         ['dots', 18],
         ['bamboo', 18],
@@ -58,10 +68,6 @@ export class Grid extends Phaser.GameObjects.Container {
         let size = { width: this.tileWidth, height: this.tileHeight };
         this.size = { cols: nb_cols, rows: nb_lines };
 
-        let scale = this.getBestScaleForTiles();
-        console.log(scale);
-
-
         this.scene.add.existing(this);
 
         for (let i = 0; i < this.size.rows; i++) {
@@ -83,7 +89,6 @@ export class Grid extends Phaser.GameObjects.Container {
 
         // Remove all useless tiles
         tiles = _.head(tiles, nb_cols * nb_lines);
-        console.log(tiles.map(t => t.tileid))
 
         // Create a sorted array of tiles
         let tcount = 0;
@@ -99,7 +104,15 @@ export class Grid extends Phaser.GameObjects.Container {
                 this.setTile(i, j, tile);
             }
         }
-        this.scale = ratio * this.getBestScaleForTiles();
+
+        // Update the grid according to the number of tiles
+        console.log("best scale", ratio * this.getBestScaleForTiles());
+
+        this.scale = Phaser.Math.Clamp(
+            ratio * this.getBestScaleForTiles(),
+            0.5,
+            1.75
+        );
 
         // let debug = new Debugger(this.scene);
         // this.each(t => {
@@ -179,7 +192,7 @@ export class Grid extends Phaser.GameObjects.Container {
                 }
 
                 // If a path can be found, draw it
-                let graphics = this.displayPath(path);
+                let graphics = this.displayPath(path, tile1, tile2);
 
                 // Update the grid by removing both tiles                    
                 this.setTile(tile1.row, tile1.col, null);
@@ -192,12 +205,25 @@ export class Grid extends Phaser.GameObjects.Container {
                         graphics.destroy();
                         tile1.destroy();
                         tile2.destroy();
+
+                        // If an action has been added to this match, execute it
+                        if (this.onNextMatch) {
+                            this.onNextMatch();
+                            this.onNextMatch = null;
+                        }
+                        // Execute the onmatch action if there is one
+                        if (this.onMatch) {
+                            this.onMatch();
+                        }
                     }
                 });
 
                 // Check if the game is finished
                 if (this.isFinished()) {
                     console.log("GAME FINISHED");
+                    if (this.onFinished) {
+                        this.onFinished();
+                    }
                     return;
                 }
 
@@ -241,7 +267,7 @@ export class Grid extends Phaser.GameObjects.Container {
     /**
      * Returns all tiles corresponding to the given predicate
      */
-    private getAllTiles(predicate: (t: Tile) => boolean) {
+    public getAllTiles(predicate: (t: Tile) => boolean): Tile[] {
         let tiles = [];
 
         for (let row of this.tiles) {
@@ -255,13 +281,28 @@ export class Grid extends Phaser.GameObjects.Container {
     }
 
     /**
-     * Display the path between them and destroy both cards.
+     * Exectute the given action on each non null tile corresponding to the given predicate
      */
-    private matchTiles(tile1: Tile, tile2: Tile) {
-
+    public doForAllTiles(action: (t: Tile) => void, predicate?: (t: Tile) => boolean) {
+        for (let row of this.tiles) {
+            for (let tile of row) {
+                if (tile) {
+                    if (predicate) {
+                        if (predicate(tile)) {
+                            action(tile);
+                        } // else the tile does not match the predicate, nothing to do
+                    } else {
+                        action(tile);
+                    }
+                }
+            }
+        }
     }
 
-    // TODO check jokers
+
+    /** 
+     * TODO check jokers
+     **/
     public canMatch(tile1: Pick<Tile, 'tileid'>, tile2: Pick<Tile, 'tileid'>): boolean {
         return tile1 !== tile2 && tile1.tileid === tile2.tileid;
     }
@@ -352,14 +393,16 @@ export class Grid extends Phaser.GameObjects.Container {
                 }
             }
         }
-
-        // this._updateGrid();
     }
 
     /**
      * Update tiles to their correct position according to their row and col attributes.
      */
     public updateBoard() {
+
+        // Unselect all tiles if any are selected
+        this.doForAllTiles(t => t.unselect());
+
         for (let i = 0; i < this.size.rows; i++) {
             for (let j = 0; j < this.size.cols; j++) {
                 let tile = this.get(i, j);
@@ -560,7 +603,7 @@ export class Grid extends Phaser.GameObjects.Container {
      * Display the path given in parameter
      * @param p The path to be displayed
      */
-    public displayPath(path: Path): Phaser.GameObjects.Graphics {
+    public displayPath(path: Path, tile1: Tile, tile2: Tile): Phaser.GameObjects.Graphics {
 
         let graphics = this.scene.make.graphics({
             x: 0,
@@ -579,7 +622,17 @@ export class Grid extends Phaser.GameObjects.Container {
         })
 
         graphics.strokePoints(points, false, false);
-        // this.add(poly);
+
+        if (!tile1.isSelected) {
+            tile1.highlight();
+        }
+        if (!tile2.isSelected) {
+            tile2.highlight();
+        }
+
+        // Both tile should come at the top of the path
+        this.bringToTop(tile1);
+        this.bringToTop(tile2);
 
         return graphics;
     }
@@ -617,7 +670,7 @@ export class Grid extends Phaser.GameObjects.Container {
     }
 
     private _getBestScaleForLines(): number {
-        let availableSpace = bounds.height - 45 * 2 * ratio;
+        let availableSpace = bounds.height - 90 * 2 * ratio;
         let cardHeight = this.tileHeight + Grid.GUTTER_SIZE_H;
         let bestCardHeight = availableSpace / this.size.rows;
 
