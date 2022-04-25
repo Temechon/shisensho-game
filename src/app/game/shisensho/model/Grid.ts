@@ -106,29 +106,16 @@ export class Grid extends Phaser.GameObjects.Container {
         }
 
         // Update the grid according to the number of tiles
-        console.log("best scale", ratio * this.getBestScaleForTiles());
-
-        this.scale = Phaser.Math.Clamp(
-            ratio * this.getBestScaleForTiles(),
-            0.5,
-            1.75
-        );
-
-        // let debug = new Debugger(this.scene);
-        // this.each(t => {
-        //     debug.point(
-        //         this.convertColRowToXY(t.row, t.col), this)
-        // })
+        this.scale = getBestScaleForTiles({
+            tileWidth: this.tileWidth,
+            tileHeight: this.tileHeight
+        }, this.size)
 
         // shuffle the array
-        this.shuffleboard();
-
-        this.updateBoard();
+        this.shuffleboard(true);
 
 
         // Events
-        // let selectedTile: Tile = null;
-
         let selectedTiles: Array<Tile> = [];
 
         this.each((tile: Tile) => {
@@ -239,16 +226,10 @@ export class Grid extends Phaser.GameObjects.Container {
             if (hint.length === 0) {
                 console.log("NO MORE MOVES - SHUFFLING");
                 this.interactive = false;
-
-                while (hint.length === 0) {
-                    this.shuffleboard();
-                    hint = this.getHints(false);
-                    console.log("Hints", hint);
-                }
                 this.scene.time.addEvent({
                     delay: 2000,
                     callback: () => {
-                        this.updateBoard();
+                        this.shuffleboard(true);
                         this.interactive = true;
                     }
                 })
@@ -358,8 +339,26 @@ export class Grid extends Phaser.GameObjects.Container {
 
     /**
      * Shuffle the grid of tiles, but do not move the empty positions.
+     * Check if at least one move is possible.
+     * If the 'update' parameter is set to true, the tiles are moved to their new positions
      */
-    public shuffleboard() {
+    public shuffleboard(update: boolean = false) {
+        this._shuffleboard();
+        let hint = this.getHints(false);
+        while (hint.length === 0) {
+            this._shuffleboard();
+            hint = this.getHints(false);
+        }
+        if (update) {
+            this.updateBoard();
+        }
+    }
+
+    /**
+     * Shuffle the grid of tiles in place, but do not move the empty positions.
+     * Does not check if there is at least one move to do.
+     */
+    private _shuffleboard() {
         // array to shuffle
         let arrayToShuffle = [];
         for (let arr of this.tiles) {
@@ -648,33 +647,50 @@ export class Grid extends Phaser.GameObjects.Container {
             row * this.tileHeight + row * Grid.GUTTER_SIZE_H,
         );
     }
+}
 
-    /**
-     * Returns the best scaling for tiles to fit the grid.
-     */
-    private getBestScaleForTiles(): number {
-        return Math.min(
-            this._getBestScaleForCols(),
-            this._getBestScaleForLines()
-        );
+
+function getBestScaleForCols(tileWidth: number, cols: number) {
+    // Find best scale for this number of columns
+    let availableSpace = bounds.width - 45 * 2 * ratio;
+    let cardWidth = tileWidth + Grid.GUTTER_SIZE;
+    let bestCardWidth = availableSpace / cols;
+
+    let scale = bestCardWidth / cardWidth;
+    return scale;
+}
+
+function getBestScaleForLines(tileHeight: number, rows: number): number {
+    let availableSpace = bounds.height - 90 * 2 * ratio;
+    let cardHeight = tileHeight + Grid.GUTTER_SIZE_H;
+    let bestCardHeight = availableSpace / rows;
+
+    let scale = bestCardHeight / cardHeight;
+    return scale;
+}
+
+/**
+ * Returns the best scale for tile according to the number of tiles and the available space
+ * @param tilesize 
+ * @param gridsize 
+ * @returns 
+ */
+export function getBestScaleForTiles(
+    tilesize: {
+        tileWidth: number,
+        tileHeight: number
+    },
+    gridsize: {
+        cols: number,
+        rows: number
     }
-
-    private _getBestScaleForCols(): number {
-        // Find best scale for this number of columns
-        let availableSpace = bounds.width - 45 * 2 * ratio;
-        let cardWidth = this.tileWidth + Grid.GUTTER_SIZE;
-        let bestCardWidth = availableSpace / this.size.cols;
-
-        let scale = bestCardWidth / cardWidth;
-        return scale;
-    }
-
-    private _getBestScaleForLines(): number {
-        let availableSpace = bounds.height - 90 * 2 * ratio;
-        let cardHeight = this.tileHeight + Grid.GUTTER_SIZE_H;
-        let bestCardHeight = availableSpace / this.size.rows;
-
-        let scale = bestCardHeight / cardHeight;
-        return scale;
-    }
+): number {
+    return Phaser.Math.Clamp(
+        ratio * Math.min(
+            getBestScaleForCols(tilesize.tileWidth, gridsize.cols),
+            getBestScaleForLines(tilesize.tileHeight, gridsize.rows)
+        ),
+        0.5,
+        1.75
+    );
 }

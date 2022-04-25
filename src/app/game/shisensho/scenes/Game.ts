@@ -26,17 +26,24 @@ export class Game extends Phaser.Scene {
             fontFamily: "OpenSans"
         };
 
-        let grid = new Grid(this, 13, 8)
+        let grid = new Grid(this, 2, 3)
 
         grid.x = w / 2;
         grid.y = h / 2;
 
         grid.onFinished = () => {
-            this.scene.launch('end', { nbtiles: grid.size.cols * grid.size.rows });
+            this.scene.launch('end', { rows: grid.size.rows, cols: grid.size.cols });
         }
+
+        let graphics: Phaser.GameObjects.Graphics;
 
         // Debug - Shuffle the board
         this.input.keyboard.on('keydown-A', () => {
+
+            if (graphics) {
+                graphics.destroy();
+            }
+
             grid.shuffleboard();
 
             grid.doForAllTiles(t => t.hideImage());
@@ -51,7 +58,6 @@ export class Game extends Phaser.Scene {
         })
 
         // Debug - Display hint
-        let graphics: Phaser.GameObjects.Graphics;
         this.input.keyboard.on('keydown-Z', () => {
             if (grid.interactive) {
                 let hint = grid.getHints(false)[0];
