@@ -47,6 +47,8 @@ export class Boot extends Phaser.Scene {
             h);
         ratio = 1;
 
+        // this.game.events.emit('boot_ready');
+
         // console.log('Bounds - ', bounds);
         // console.log('Game width - ', w);
         // console.log('Game height - ', h);

@@ -1,15 +1,11 @@
-import { Grid } from "../model/Grid";
-import { Debugger } from "../helpers/Debugger";
 import { Helpers } from "../helpers/Helpers";
-import { bounds } from "./Boot";
+import { Constants } from "../model/Constants";
+import { Grid } from "../model/Grid";
 
 export class Game extends Phaser.Scene {
 
-    static INSTANCE: Game;
-
     constructor() {
         super('game');
-        Game.INSTANCE = this;
     }
 
     create() {
@@ -26,12 +22,13 @@ export class Game extends Phaser.Scene {
             fontFamily: "OpenSans"
         };
 
-        let grid = new Grid(this, 2, 3)
+        let grid = new Grid(this, 6, 5)
 
         grid.x = w / 2;
         grid.y = h / 2;
 
         grid.onFinished = () => {
+            this.game.events.emit(Constants.EVENTS.GAME_FINISHED);
             this.scene.launch('end', { rows: grid.size.rows, cols: grid.size.cols });
         }
 
@@ -71,20 +68,6 @@ export class Game extends Phaser.Scene {
                 }
             }
         })
-
-        // let paths = grid.getAllPossibleMoves();
-        // console.log(paths);
-
-        // for (let p of paths) {
-        //     grid.displayPath(p.path)
-        // }
-
-
-        // let i = this.add.sprite(w / 2, h / 2, 'tiles');
-        // let i = this.add.tileSprite(w / 2, h / 2, 0, 0, 'tiles', '1f1e6-1f1f4.png');
-        // i.scale = ratio;
-
-
     }
 
 }

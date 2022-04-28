@@ -1,1 +1,20 @@
-<div id="game"></div>
+<div class="w-full h-full relative">
+
+    <!-- Game UI -->
+    <div class="absolute w-full h-12 z-10 flex items-center font-sans px-12 text-white font-semibold space-x-4">
+        <div>
+            Moves: {{totalMoves}}
+        </div>
+        <div>
+            Correct moves: {{totalCorrectMoves}}
+        </div>
+    </div>
+
+    <!-- Popup displayed when game finished -->
+    <replay-popup (onAction)="replay()"></replay-popup>
+
+    <!-- The game! -->
+    <div class="absolute z-0">
+        <div id="game"></div>
+    </div>
+</div>

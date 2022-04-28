@@ -3,12 +3,13 @@ module.exports = {
     './src/**/*.{html,ts,scss}',
   ],
   theme: {
-    extend: {},
+    extend: {
+
+      fontFamily: {
+        sans: ['Jost', 'sans-serif'],
+        display: ['Jost', 'sans-serif']
+      }
+    },
   },
   plugins: [],
-
-  fontFamily: {
-    sans: ['Jost', 'sans-serif'],
-    display: ['Jost', 'sans-serif']
-  },
 }

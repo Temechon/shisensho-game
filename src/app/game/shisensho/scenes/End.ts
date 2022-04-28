@@ -22,7 +22,6 @@ export class End extends Phaser.Scene {
     }
 
     create() {
-
         let tileCache = this.textures.getFrame('tiles', 'bamboo/0');
         this.tileWidth = (tileCache.width + 25) * ratio;
         this.tileHeight = this.tileWidth * 1.3
@@ -49,7 +48,6 @@ export class End extends Phaser.Scene {
                 break;
             }
         }
-        console.log(counter);
 
         // Shuffle tiles
         Helpers.shuffle(tiles);
@@ -88,5 +86,9 @@ export class End extends Phaser.Scene {
                 })
             }
         })
+
+        // Create full size rectangle to create a light background
+        let rect = this.add.rectangle(0, 0, bounds.width, bounds.height, 0x000000, 0.5);
+        rect.setOrigin(0)
     }
 }

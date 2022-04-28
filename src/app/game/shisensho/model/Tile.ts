@@ -12,8 +12,6 @@ export class Tile extends Phaser.GameObjects.Container {
 
     static THICKNESS = 6;
 
-    emitter: Phaser.GameObjects.Particles.ParticleEmitter;
-
     constructor(
         scene: Phaser.Scene,
         public row: number,
@@ -41,18 +39,6 @@ export class Tile extends Phaser.GameObjects.Container {
         let h = this.size.height;
         let rect = new Phaser.Geom.Rectangle(-w / 2, -h / 2, w, h);
         this.setInteractive(rect, Phaser.Geom.Rectangle.Contains);
-
-        const particles = this.scene.add.particles('star');
-
-        this.emitter = particles.createEmitter({
-            blendMode: Phaser.BlendModes.ADD,
-            tint: [0xffff00],
-            speed: 1000,
-            lifespan: 500,
-            frequency: 100,
-            on: false,
-            scale: 0.25
-        });
     }
 
     public get xy(): Phaser.Geom.Point {
@@ -124,7 +110,10 @@ export class Tile extends Phaser.GameObjects.Container {
     }
 
     destroy() {
-        this.emitter.emitParticleAt(this.parentContainer.x + this.x, this.parentContainer.y + this.y, 4)
+        if (!this.parentContainer) {
+            super.destroy();
+            return;
+        }
         this.scene.add.tween({
             targets: [this],
             duration: 250,

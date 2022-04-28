@@ -3,12 +3,11 @@
  */
 export abstract class Constants {
 
-    static FONT = {
-        TEXT: "OpenSans",
-        NUMBERS: "KeepCalm"
-    };
-
     static EVENTS = {
-        GRID_CHECK_HINTS: "grid:checkHints"
+        GRID_CHECK_HINTS: "grid:checkHints",
+        GAME_FINISHED: "game:finished",
+
+        MOVE: "move:done",
+        CORRECT_MOVE: "move:correct:done",
     }
 }

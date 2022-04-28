@@ -1,0 +1,23 @@
+<div #popup
+    class=" z-10 hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border px-4 py-2 w-1/2 bg-white rounded-md shadow-md flex-col items-center">
+    <!-- Title -->
+    <div class="font-extrabold text-3xl uppercase ">
+        Congrats!
+    </div>
+    <!-- Subtitle -->
+    <div class="text-lg text-gray-400">
+        You just completed the board!
+    </div>
+
+    <!-- Score -->
+
+
+    <!-- Replay button -->
+    <div class="mt-4">
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md shadow-md"
+            (click)="action()">
+            Replay
+        </button>
+    </div>
+
+</div>

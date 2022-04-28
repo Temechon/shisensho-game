@@ -144,6 +144,8 @@ export class Grid extends Phaser.GameObjects.Container {
                     return;
                 }
 
+                this.scene.game.events.emit(Constants.EVENTS.MOVE)
+
                 // Remove the two first tiles from the selected array
                 let tile1 = selectedTiles.shift();
                 let tile2 = selectedTiles.shift();
@@ -184,6 +186,8 @@ export class Grid extends Phaser.GameObjects.Container {
                 // Update the grid by removing both tiles                    
                 this.setTile(tile1.row, tile1.col, null);
                 this.setTile(tile2.row, tile2.col, null);
+
+                this.scene.game.events.emit(Constants.EVENTS.CORRECT_MOVE)
 
                 // Then make them disapear
                 this.scene.time.addEvent({

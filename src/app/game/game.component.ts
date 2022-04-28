@@ -1,5 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import * as Phaser from 'phaser';
+import { BehaviorSubject } from 'rxjs';
+import { ReplayPopupComponent } from './gui/popup/replay-popup/replay-popup.component';
+import { Constants } from './shisensho/model/Constants';
 import { Boot } from './shisensho/scenes/Boot';
 import { End } from './shisensho/scenes/End';
 import { Game } from './shisensho/scenes/Game';
@@ -9,12 +12,25 @@ import { Game } from './shisensho/scenes/Game';
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.scss']
 })
-export class GameComponent implements OnInit {
+export class GameComponent {
 
-  constructor() { }
+  /** The popup to display when the game is finished */
+  @ViewChild(ReplayPopupComponent)
+  popup: ReplayPopupComponent;
 
-  ngOnInit(): void {
-    console.log(window.innerWidth * devicePixelRatio, window.innerHeight * devicePixelRatio);
+  /** Instance of the Phaser game */
+  phaserGame: Phaser.Game;
+
+  totalMoves = 0;
+
+  totalCorrectMoves = 0;
+
+  ngAfterViewInit() {
+    this.initGame();
+  }
+
+
+  private initGame() {
 
     const config = {
       parent: 'game',
@@ -22,19 +38,39 @@ export class GameComponent implements OnInit {
       backgroundColor: '#78D9B2',
       scale: {
         mode: Phaser.Scale.FIT,
-        width: window.innerWidth * devicePixelRatio,
-        height: window.innerHeight * devicePixelRatio,
+        width: window.innerWidth,
+        height: window.innerHeight,
       },
       scene: [
         Boot,
-        // SSS.Home,
         Game,
-        // SSS.Loading,
         End
       ]
     };
+    this.phaserGame = new Phaser.Game(config);
 
-    const game = new Phaser.Game(config);
+    this.phaserGame.events.on(Constants.EVENTS.GAME_FINISHED, () => {
+      this.popup.show();
+    })
+    this.phaserGame.events.on(Constants.EVENTS.MOVE, () => {
+      this.totalMoves++
+    })
+    this.phaserGame.events.on(Constants.EVENTS.CORRECT_MOVE, () => {
+      this.totalCorrectMoves++
+    })
   }
 
+  /**
+   * Relaunch a game with the same parameters
+   */
+  replay() {
+    this.phaserGame.scene.stop('end');
+    this.phaserGame.scene.start('game');
+
+    this.popup.hide();
+
+    // Reset game ui
+    this.totalCorrectMoves = 0;
+    this.totalMoves = 0;
+  }
 }
