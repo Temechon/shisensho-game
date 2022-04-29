@@ -1,18 +1,23 @@
 <div class="w-full h-full relative">
 
     <!-- Game UI -->
-    <div class="absolute w-full h-12 z-10 flex items-center font-sans px-12 text-white font-semibold space-x-4">
-        <div>
+    <div class="absolute w-full h-12 z-10 flex items-center font-sans px-12 text-white font-semibold select-none">
+        <div class="mx-2">
             Moves: {{totalMoves}}
         </div>
-        <div>
+        <div class="mx-2">
             Correct moves: {{totalCorrectMoves}}
+        </div>
+        <div (click)="options()"
+            class="text-xs xl:text-base bg-white rounded-lg px-3 py-1 ml-auto text-board-green cursor-pointer">
+            Options
         </div>
     </div>
 
     <!-- Popup displayed when game finished -->
     <replay-popup (onAction)="replay()"></replay-popup>
     <shuffle-popup></shuffle-popup>
+    <options-popup (onClose)="unpause()"></options-popup>
 
     <!-- The game! -->
     <div id="game"></div>

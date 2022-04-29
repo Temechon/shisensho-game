@@ -1,0 +1,36 @@
+<div #popup class="absolute hidden inset-0 bg-black/75">
+
+    <div
+        class="z-10 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border px-4 py-6 w-1/3 bg-white rounded-md shadow-md flex-col items-center">
+
+        <!-- close icon -->
+        <div (click)="hide()"
+            class="absolute top-2 right-2 border rounded-full w-8 h-8 ring-2 ring-board-green flex items-center justify-center text-white">
+            x
+        </div>
+
+        <!-- Title -->
+        <div class="font-extrabold text-3xl uppercase mb-8 text-center">
+            Options
+        </div>
+
+        <div class="w-5/6 bg-red-50 m-auto">
+            <!-- row -->
+            <div class="flex items-center">
+                <div class="w-2/3">
+                    Shuffle when no moves
+                </div>
+                toggle
+            </div>
+            <!-- row -->
+            <div class="flex items-center">
+                <div class="w-2/3">
+                    Enable gravity
+                </div>
+                N, S, E, W ?
+            </div>
+
+        </div>
+    </div>
+
+</div>

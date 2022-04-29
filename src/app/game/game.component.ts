@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import * as Phaser from 'phaser';
 import { BehaviorSubject } from 'rxjs';
+import { OptionsPopupComponent } from './gui/popup/options-popup/options-popup.component';
 import { ReplayPopupComponent } from './gui/popup/replay-popup/replay-popup.component';
 import { ShufflePopupComponent } from './gui/popup/shuffle-popup/shuffle-popup.component';
 import { Constants } from './shisensho/model/Constants';
@@ -19,9 +20,13 @@ export class GameComponent {
   @ViewChild(ReplayPopupComponent)
   replaypopup: ReplayPopupComponent;
 
-  /** The popup to display when the game is finished */
+  /** The popup to display when the game is shuffling */
   @ViewChild(ShufflePopupComponent)
   shufflepopup: ShufflePopupComponent;
+
+  /** The popup to display when options are displayed */
+  @ViewChild(OptionsPopupComponent)
+  optionspopup: OptionsPopupComponent;
 
   /** Instance of the Phaser game */
   phaserGame: Phaser.Game;
@@ -84,5 +89,14 @@ export class GameComponent {
     // Reset game ui
     this.totalCorrectMoves = 0;
     this.totalMoves = 0;
+  }
+
+  unpause() {
+    this.phaserGame.scene.run('game');
+  }
+
+  options() {
+    this.phaserGame.scene.pause('game');
+    this.optionspopup.show();
   }
 }

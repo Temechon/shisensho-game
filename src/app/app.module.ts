@@ -6,13 +6,15 @@ import { AppComponent } from './app.component';
 import { GameComponent } from './game/game.component';
 import { ReplayPopupComponent } from './game/gui/popup/replay-popup/replay-popup.component';
 import { ShufflePopupComponent } from './game/gui/popup/shuffle-popup/shuffle-popup.component';
+import { OptionsPopupComponent } from './game/gui/popup/options-popup/options-popup.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     GameComponent,
     ReplayPopupComponent,
-    ShufflePopupComponent
+    ShufflePopupComponent,
+    OptionsPopupComponent
   ],
   imports: [
     BrowserModule,
