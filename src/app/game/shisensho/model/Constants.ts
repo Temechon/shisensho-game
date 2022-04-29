@@ -9,5 +9,8 @@ export abstract class Constants {
 
         MOVE: "move:done",
         CORRECT_MOVE: "move:correct:done",
+
+        SHUFFLING: "shuffling",
+        SHUFFLING_DONE: "shuffling:done",
     }
 }

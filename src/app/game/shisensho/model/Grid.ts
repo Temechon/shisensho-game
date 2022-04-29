@@ -218,28 +218,39 @@ export class Grid extends Phaser.GameObjects.Container {
                     return;
                 }
 
-                this.emit(Constants.EVENTS.GRID_CHECK_HINTS);
+                // Check if there are still pairs to match
+                let hint = this.getHints(false);
+
+                if (hint.length === 0) {
+                    console.log("NO MORE MOVES - SHUFFLING");
+
+                    this.interactive = false;
+                    this.scene.time.addEvent({
+                        delay: 500,
+                        callback: () => {
+                            this.scene.game.events.emit(Constants.EVENTS.SHUFFLING);
+                            this.shuffleboard();
+                            this.doForAllTiles(t => t.hideImage());
+                        }
+                    })
+
+                    this.scene.time.addEvent({
+                        delay: 2500,
+                        callback: () => {
+                            this.updateBoard();
+                            this.doForAllTiles(t => t.showImage());
+                            this.scene.game.events.emit(Constants.EVENTS.SHUFFLING_DONE);
+                            this.interactive = true;
+                        }
+                    })
+                }
             });
         })
 
-        this.addListener(Constants.EVENTS.GRID_CHECK_HINTS, () => {
+        // this.addListener(Constants.EVENTS.GRID_CHECK_HINTS, () => {
 
-            // Check if there are still pairs to match
-            let hint = this.getHints(false);
-            console.log("Hints", hint);
-            if (hint.length === 0) {
-                console.log("NO MORE MOVES - SHUFFLING");
-                this.interactive = false;
-                this.scene.time.addEvent({
-                    delay: 2000,
-                    callback: () => {
-                        this.shuffleboard(true);
-                        this.interactive = true;
-                    }
-                })
-            }
 
-        });
+        // });
     }
 
     /**

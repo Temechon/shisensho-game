@@ -88,7 +88,7 @@ export class End extends Phaser.Scene {
         })
 
         // Create full size rectangle to create a light background
-        let rect = this.add.rectangle(0, 0, bounds.width, bounds.height, 0x000000, 0.5);
+        let rect = this.add.rectangle(0, 0, bounds.width, bounds.height, 0x000000, 0.35);
         rect.setOrigin(0)
     }
 }
