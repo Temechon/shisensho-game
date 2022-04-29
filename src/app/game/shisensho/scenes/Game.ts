@@ -15,6 +15,8 @@ export class Game extends Phaser.Scene {
         console.log('Game width - ', w);
         console.log('Game height - ', h);
 
+        this.input.mouse.preventDefaultWheel = false;
+
 
         let style = {
             fontSize: Helpers.font(50),

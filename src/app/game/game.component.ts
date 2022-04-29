@@ -43,8 +43,8 @@ export class GameComponent {
       backgroundColor: '#78D9B2',
       scale: {
         mode: Phaser.Scale.FIT,
-        width: window.innerWidth,
-        height: window.innerHeight,
+        width: window.innerWidth + 15,
+        height: window.innerHeight + 15,
       },
       scene: [
         Boot,

@@ -1,1 +1,65 @@
 <app-game></app-game>
+
+<section class="w-3/5 p-12 mx-auto text-xl">
+
+    <h1 class="font-bold text-6xl mt-8 mb-20 text-center">Shisen-Sho - A Japanese tile game</h1>
+
+    <p class="">
+        Sometimes referred to as 'Shisen', 'Four Rivers' or simply 'Rivers,' Shisen-sho is a Japanese tile-based game
+        similar to Mahjong solitaire.
+    </p>
+
+    <h2 class="font-bold text-2xl text-gray-400 mt-6 mb-4">How to play?</h2>
+
+    <p class="">
+        It's a single player game, and a its core, a game of match-two. The goal of the game is to clear the board by
+        removing tiles two by two.<br>
+        However, the challenge is to match them according a certain path, as this simple rule defines it:
+    </p>
+
+    <blockquote class="w-3/4 m-auto text-green-300 text-3xl text-center font-semibold my-8">Two pieces can be removed
+        only if they can be connected with a maximum of <b>three lines.</b></blockquote>
+
+    <div class="flex flex-col space-y-8">
+        <!-- One line -->
+        <div class="flex items-center justify-center space-x-8">
+            <div class="bg-board-green w-1/2 p-12 rounded-xl flex items-center justify-center">
+                <img src="assets/help/one.png" alt="">
+            </div>
+            <div>
+                One line - Tiles can be removed.
+            </div>
+        </div>
+
+        <!-- Two lines -->
+        <div class="flex items-center justify-center space-x-8">
+            <div class="bg-board-green w-1/2 p-12 rounded-xl flex items-center justify-center">
+                <img src="assets/help/two.png" alt="">
+            </div>
+            <div>
+                Two lines - Tiles can be removed.
+            </div>
+        </div>
+
+        <!-- Three lines -->
+        <div class="flex items-center justify-center space-x-8">
+            <div class="bg-board-green w-1/2 p-4 rounded-xl flex items-center justify-center">
+                <img src="assets/help/three.png" alt="">
+            </div>
+            <div>
+                Three lines - Tiles can be removed.
+            </div>
+        </div>
+
+        <!-- Four lines -->
+        <div class="flex items-center justify-center space-x-8">
+            <div class="bg-board-green w-1/2 p-4 rounded-xl flex items-center justify-center">
+                <img src="assets/help/four.png" alt="">
+            </div>
+            <div>
+                Four lines - Tiles can <span class="text-red-400 font-bold">not</span> be removed.
+            </div>
+        </div>
+    </div>
+
+</section>
