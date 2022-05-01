@@ -12,5 +12,7 @@ export abstract class Constants {
 
         SHUFFLING: "shuffling",
         SHUFFLING_DONE: "shuffling:done",
+
+        SHOW_HINT: "hint:show"
     }
 }

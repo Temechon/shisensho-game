@@ -32,7 +32,6 @@ export class GameComponent {
   phaserGame: Phaser.Game;
 
   totalMoves = 0;
-
   totalCorrectMoves = 0;
 
   ngAfterViewInit() {
@@ -89,6 +88,7 @@ export class GameComponent {
     // Reset game ui
     this.totalCorrectMoves = 0;
     this.totalMoves = 0;
+
   }
 
   unpause() {
@@ -98,5 +98,27 @@ export class GameComponent {
   options() {
     this.phaserGame.scene.pause('game');
     this.optionspopup.show();
+  }
+
+  hint() {
+    this.phaserGame.events.emit(Constants.EVENTS.SHOW_HINT);
+  }
+
+  getTime() {
+    if (!this.phaserGame) {
+      return "";
+    }
+
+    let gamesecene = this.phaserGame.scene.getScene('game') as Game;
+
+    if (!gamesecene) {
+      return ""
+    }
+
+    let seconds = gamesecene.seconds % 60;
+    let minutes = Math.floor(gamesecene.seconds / 60);
+    let hours = Math.floor(minutes / 60);
+
+    return `${minutes}:${seconds}`;
   }
 }

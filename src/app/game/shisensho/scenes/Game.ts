@@ -8,7 +8,11 @@ export class Game extends Phaser.Scene {
         super('game');
     }
 
+    seconds: number = 0;
+
     create() {
+
+        this.seconds = 0;
 
         let w = this.game.config.width as number;
         let h = this.game.config.height as number;
@@ -17,17 +21,19 @@ export class Game extends Phaser.Scene {
 
         this.input.mouse.preventDefaultWheel = false;
 
-
-        let style = {
-            fontSize: Helpers.font(50),
-            fill: "#fff",
-            fontFamily: "OpenSans"
-        };
-
-        let grid = new Grid(this, 6, 5)
+        let grid = new Grid(this, 13, 8)
 
         grid.x = w / 2;
         grid.y = h / 2;
+
+        this.time.addEvent({
+            delay: 1000,
+            repeat: -1,
+            loop: true,
+            callback: () => {
+                this.seconds++;
+            }
+        })
 
         grid.onFinished = () => {
             this.game.events.emit(Constants.EVENTS.GAME_FINISHED);
@@ -56,8 +62,8 @@ export class Game extends Phaser.Scene {
             })
         })
 
-        // Debug - Display hint
-        this.input.keyboard.on('keydown-Z', () => {
+        // Display hint
+        this.game.events.on(Constants.EVENTS.SHOW_HINT, () => {
             if (grid.interactive) {
                 let hint = grid.getHints(false)[0];
                 if (graphics) {
@@ -65,8 +71,10 @@ export class Game extends Phaser.Scene {
                 }
                 graphics = grid.displayPath(hint.path, hint.t1, hint.t2);
 
-                grid.onNextMatch = () => {
+                grid.onNextMove = () => {
                     graphics.destroy();
+                    hint.t1.unhighlight();
+                    hint.t2.unhighlight();
                 }
             }
         })

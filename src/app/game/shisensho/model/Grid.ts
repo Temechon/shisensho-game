@@ -36,6 +36,9 @@ export class Grid extends Phaser.GameObjects.Container {
     /** Callback method when a match is done. Called only once, for the next match */
     onNextMatch: () => void;
 
+    /** Callback method when a move is done. Called only once, for the next move */
+    onNextMove: () => void;
+
 
     static TILES_TYPES: Map<string, number> = new Map<string, number>([
         ['dots', 18],
@@ -114,6 +117,34 @@ export class Grid extends Phaser.GameObjects.Container {
         // shuffle the array
         this.shuffleboard(true);
 
+        // Animate all tiles to their positions
+        let delay = 0;
+
+        this.doForAllTiles(t => {
+            // t.alpha = 0;
+            t.y = -this.heightPx / 2 - 200
+        })
+        this.doForAllTiles(t => {
+            // let pos = this.getTilePositionOnBoard(t);
+            // t.x = pos.x;
+            // t.y = pos.y;
+            // console.log(pos);
+
+            this.scene.add.tween({
+                targets: t,
+                delay: delay,
+                duration: Phaser.Math.Between(750, 1250),
+                y: {
+                    from: -this.heightPx / 2 - 200,
+                    to: this.getTilePositionOnBoard(t).y
+                },
+                ease: Phaser.Math.Easing.Bounce.Out
+            })
+            // delay += Phaser.Math.Between(0, 100);
+        })
+
+
+
 
         // Events
         let selectedTiles: Array<Tile> = [];
@@ -145,6 +176,12 @@ export class Grid extends Phaser.GameObjects.Container {
                 }
 
                 this.scene.game.events.emit(Constants.EVENTS.MOVE)
+
+                // If an action has been set to the next move, execute it
+                if (this.onNextMove) {
+                    this.onNextMove();
+                    this.onNextMove = null;
+                }
 
                 // Remove the two first tiles from the selected array
                 let tile1 = selectedTiles.shift();
@@ -246,11 +283,6 @@ export class Grid extends Phaser.GameObjects.Container {
                 }
             });
         })
-
-        // this.addListener(Constants.EVENTS.GRID_CHECK_HINTS, () => {
-
-
-        // });
     }
 
     /**
@@ -426,9 +458,9 @@ export class Grid extends Phaser.GameObjects.Container {
                 }
             }
         }
-        this.each(c => {
-            c.x -= this.widthPx / 2 - this.tileWidth / 2;
-            c.y -= this.heightPx / 2 - this.tileHeight / 2;
+        this.each(tile => {
+            tile.x -= this.widthPx / 2 - this.tileWidth / 2;
+            tile.y -= this.heightPx / 2 - this.tileHeight / 2;
         });
     }
 
@@ -438,6 +470,16 @@ export class Grid extends Phaser.GameObjects.Container {
 
     public get heightPx(): number {
         return this.size.rows * this.tileHeight + (this.size.rows - 1) * Grid.GUTTER_SIZE_H;
+    }
+
+    public getTilePositionOnBoard(t: Tile): { x: number, y: number } {
+        let i = t.row;
+        let j = t.col;
+
+        return {
+            x: j * this.tileWidth + Grid.GUTTER_SIZE * j - this.widthPx / 2 + this.tileWidth / 2,
+            y: i * this.tileHeight + Grid.GUTTER_SIZE_H * i - this.heightPx / 2 + this.tileHeight / 2
+        };
     }
 
 
