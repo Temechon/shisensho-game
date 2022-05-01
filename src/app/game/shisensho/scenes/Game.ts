@@ -1,6 +1,7 @@
 import { Helpers } from "../helpers/Helpers";
 import { Constants } from "../model/Constants";
 import { Grid } from "../model/Grid";
+import { ScoreToast } from "../model/ScoreToast";
 
 export class Game extends Phaser.Scene {
 
@@ -39,6 +40,8 @@ export class Game extends Phaser.Scene {
             this.game.events.emit(Constants.EVENTS.GAME_FINISHED);
             this.scene.launch('end', { rows: grid.size.rows, cols: grid.size.cols });
         }
+
+        let st = new ScoreToast(this);
 
         let graphics: Phaser.GameObjects.Graphics;
 
