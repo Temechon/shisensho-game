@@ -114,7 +114,6 @@ export class Grid extends Phaser.GameObjects.Container {
             tileHeight: this.tileHeight
         }, this.size)
 
-        // shuffle the array
         this.shuffleboard(true);
 
         // Animate all tiles to their positions
@@ -306,6 +305,22 @@ export class Grid extends Phaser.GameObjects.Container {
             }
         }
         return tiles;
+    }
+
+    /**
+     * Returns a number representation of this grid with numbers
+     */
+    toString(): Array<Array<string>> {
+        let strings = [];
+
+        for (let row of this.tiles) {
+            let rowString = [];
+            for (let tile of row) {
+                rowString.push(tile.tileid);
+            }
+            strings.push(rowString);
+        }
+        return strings;
     }
 
     /**

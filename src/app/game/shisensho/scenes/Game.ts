@@ -2,6 +2,7 @@ import { Helpers } from "../helpers/Helpers";
 import { Constants } from "../model/Constants";
 import { Grid } from "../model/Grid";
 import { ScoreToast } from "../model/ScoreToast";
+import { Solver } from "../model/Solver";
 
 export class Game extends Phaser.Scene {
 
@@ -22,7 +23,7 @@ export class Game extends Phaser.Scene {
 
         this.input.mouse.preventDefaultWheel = false;
 
-        let grid = new Grid(this, 13, 8)
+        let grid = new Grid(this, 8, 8)
 
         grid.x = w / 2;
         grid.y = h / 2;
@@ -35,6 +36,9 @@ export class Game extends Phaser.Scene {
                 this.seconds++;
             }
         })
+
+
+
 
         grid.onFinished = () => {
             this.game.events.emit(Constants.EVENTS.GAME_FINISHED);
@@ -63,6 +67,51 @@ export class Game extends Phaser.Scene {
                     grid.doForAllTiles(t => t.showImage());
                 }
             })
+        })
+
+        // Debug - resolve the board
+        // TODO
+        this.input.keyboard.on('keydown-R', () => {
+
+            // let hints = grid.getHints(false);
+            // let counter = 0;
+            // while (hints.length > 0) {
+            //     counter++
+            //     console.log("Hint found");
+
+            //     let { t1, t2 } = hints[0];
+
+            //     // Update the grid by removing both tiles                    
+            //     grid.setTile(t1.row, t1.col, null);
+            //     grid.setTile(t2.row, t2.col, null);
+
+            //     // If grid is empty, game is finished
+            //     if (grid.isFinished()) {
+            //         console.log(`Game finished without shuffle in ${counter} steps`);
+            //         break;
+            //     } else {
+            //         hints = grid.getHints(false)
+            //     }
+            // }
+            // console.log("Hints", counter);
+
+            while (Solver.Solve(grid) === null) {
+                console.log("Shuffling");
+                grid.shuffleboard();
+            }
+            grid.updateBoard();
+
+
+
+            // // Update the grid by removing both tiles                    
+            // grid.setTile(t1.row, t1.col, null);
+            // grid.setTile(t2.row, t2.col, null);
+            // t1.destroy();
+            // t2.destroy();
+            // let hint = grid.getHints(false);
+            // if (hint.length === 0) {
+            //     grid.shuffleboard(true);
+            // }
         })
 
         // Display hint
