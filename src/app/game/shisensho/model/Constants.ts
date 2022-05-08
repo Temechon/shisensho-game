@@ -7,8 +7,8 @@ export abstract class Constants {
         GRID_CHECK_HINTS: "grid:checkHints",
         GAME_FINISHED: "game:finished",
 
-        MOVE: "move:done",
-        CORRECT_MOVE: "move:correct:done",
+        MOVE_DONE: "move:done",
+        CORRECT_MOVE_DONE: "move:correct:done",
 
         SHUFFLING: "shuffling",
         SHUFFLING_DONE: "shuffling:done",

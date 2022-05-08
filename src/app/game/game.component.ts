@@ -62,10 +62,10 @@ export class GameComponent {
     this.phaserGame.events.on(Constants.EVENTS.GAME_FINISHED, () => {
       this.replaypopup.show();
     })
-    this.phaserGame.events.on(Constants.EVENTS.MOVE, () => {
+    this.phaserGame.events.on(Constants.EVENTS.MOVE_DONE, () => {
       this.totalMoves++
     })
-    this.phaserGame.events.on(Constants.EVENTS.CORRECT_MOVE, () => {
+    this.phaserGame.events.on(Constants.EVENTS.CORRECT_MOVE_DONE, () => {
       this.totalCorrectMoves++
     })
     this.phaserGame.events.on(Constants.EVENTS.SHUFFLING, () => {
@@ -84,6 +84,9 @@ export class GameComponent {
    */
   replay() {
     this.phaserGame.scene.stop('end');
+
+    // TODO : Removes all event listeners used in the Game scene.
+
     this.phaserGame.scene.start('game');
 
     this.replaypopup.hide();

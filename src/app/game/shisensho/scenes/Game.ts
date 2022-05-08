@@ -23,14 +23,11 @@ export class Game extends Phaser.Scene {
 
         let w = this.game.config.width as number;
         let h = this.game.config.height as number;
-        console.log('Game width - ', w);
-        console.log('Game height - ', h);
 
         this.input.mouse.preventDefaultWheel = false;
 
-
-        let grid = new Grid(this, 13, 8)
-
+        // Grid
+        let grid = new Grid(this, 4, 4)
         grid.x = w / 2;
         grid.y = h / 2 + 45;
 
@@ -39,8 +36,29 @@ export class Game extends Phaser.Scene {
         combobar.x = w / 2;
         combobar.y = 75
         this.add.existing(combobar);
-        combobar.setProgress(0.5);
+        combobar.setProgress(1)
 
+        // Start the combo bar at the first correct move
+        this.game.events.on(Constants.EVENTS.CORRECT_MOVE_DONE, () => {
+            combobar.start();
+        })
+
+        // Pause the combo bar when shuffling
+        this.game.events.on(Constants.EVENTS.SHUFFLING, () => {
+            combobar.stop();
+        })
+
+        // When shuffling is done, restart the combo bar after a few seconds
+        this.game.events.on(Constants.EVENTS.SHUFFLING_DONE, () => {
+            this.time.addEvent({
+                delay: 500,
+                callback: () => {
+                    combobar.start();
+                }
+            })
+        })
+
+        // Time
         this.time.addEvent({
             delay: 1000,
             repeat: -1,
@@ -50,23 +68,28 @@ export class Game extends Phaser.Scene {
             }
         })
 
-        grid.onFinished = () => {
-            this.game.events.emit(Constants.EVENTS.GAME_FINISHED);
+        this.game.events.on(Constants.EVENTS.GAME_FINISHED, () => {
+            combobar.stop();
             this.scene.launch('end', { rows: grid.size.rows, cols: grid.size.cols });
-        }
+        })
 
-        grid.onMatch = (t1: Tile, t2: Tile) => {
+        this.game.events.on(Constants.EVENTS.CORRECT_MOVE_DONE, (t1: Tile, t2: Tile) => {
+
+            let score = 100 * combobar.multiplier;
 
             // Create score toast at t1 position
-            let toast = new ScoreToast(this, 100);
+            let toast = new ScoreToast(this, score);
             toast.displayAt(t1.x + grid.x, t1.y + grid.y);
-
             toast.depth = 10;
-            // Add score
-            this.score += 100;
 
-            this.game.events.emit(Constants.EVENTS.ADD_SCORE, 100);
-        }
+            // Add score
+            this.score += score;
+
+            // Reset combo bar
+            combobar.reset();
+
+            this.game.events.emit(Constants.EVENTS.ADD_SCORE, score);
+        })
 
         let graphics: Phaser.GameObjects.Graphics;
 
@@ -90,49 +113,14 @@ export class Game extends Phaser.Scene {
             })
         })
 
-        // Debug - resolve the board
-        // TODO
+        // Debug - Find a grid with no shuffle
         this.input.keyboard.on('keydown-R', () => {
-
-            // let hints = grid.getHints(false);
-            // let counter = 0;
-            // while (hints.length > 0) {
-            //     counter++
-            //     console.log("Hint found");
-
-            //     let { t1, t2 } = hints[0];
-
-            //     // Update the grid by removing both tiles                    
-            //     grid.setTile(t1.row, t1.col, null);
-            //     grid.setTile(t2.row, t2.col, null);
-
-            //     // If grid is empty, game is finished
-            //     if (grid.isFinished()) {
-            //         console.log(`Game finished without shuffle in ${counter} steps`);
-            //         break;
-            //     } else {
-            //         hints = grid.getHints(false)
-            //     }
-            // }
-            // console.log("Hints", counter);
 
             while (Solver.Solve(grid) === null) {
                 console.log("Shuffling");
                 grid.shuffleboard();
             }
             grid.updateBoard();
-
-
-
-            // // Update the grid by removing both tiles                    
-            // grid.setTile(t1.row, t1.col, null);
-            // grid.setTile(t2.row, t2.col, null);
-            // t1.destroy();
-            // t2.destroy();
-            // let hint = grid.getHints(false);
-            // if (hint.length === 0) {
-            //     grid.shuffleboard(true);
-            // }
         })
 
         // Display hint
@@ -144,11 +132,12 @@ export class Game extends Phaser.Scene {
                 }
                 graphics = grid.displayPath(hint.path, hint.t1, hint.t2);
 
-                grid.onNextMove = () => {
+                // Delete everything on the next move
+                this.game.events.once(Constants.EVENTS.MOVE_DONE, () => {
                     graphics.destroy();
                     hint.t1.unhighlight();
                     hint.t2.unhighlight();
-                }
+                })
             }
         })
     }

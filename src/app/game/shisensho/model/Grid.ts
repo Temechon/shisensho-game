@@ -27,19 +27,6 @@ export class Grid extends Phaser.GameObjects.Container {
      */
     public tiles: Array<Array<Tile>> = [];
 
-    /** Callback method when the grid is finished */
-    onFinished: () => void;
-
-    /** Callback method when a match is done. Called for each match */
-    onMatch: (t1: Tile, t2: Tile) => void;
-
-    /** Callback method when a match is done. Called only once, for the next match */
-    onNextMatch: () => void;
-
-    /** Callback method when a move is done. Called only once, for the next move */
-    onNextMove: () => void;
-
-
     static TILES_TYPES: Map<string, number> = new Map<string, number>([
         ['dots', 18],
         ['bamboo', 18],
@@ -175,13 +162,7 @@ export class Grid extends Phaser.GameObjects.Container {
             return;
         }
 
-        this.scene.game.events.emit(Constants.EVENTS.MOVE)
-
-        // If an action has been set to the next move, execute it
-        if (this.onNextMove) {
-            this.onNextMove();
-            this.onNextMove = null;
-        }
+        this.scene.game.events.emit(Constants.EVENTS.MOVE_DONE)
 
         // Remove the two first tiles from the selected array
         let tile1 = this.selectedTiles.shift();
@@ -224,12 +205,7 @@ export class Grid extends Phaser.GameObjects.Container {
         this.setTile(tile1.row, tile1.col, null);
         this.setTile(tile2.row, tile2.col, null);
 
-        this.scene.game.events.emit(Constants.EVENTS.CORRECT_MOVE)
-
-        // Execute the onmatch action if there is one
-        if (this.onMatch) {
-            this.onMatch(tile1, tile2);
-        }
+        this.scene.game.events.emit(Constants.EVENTS.CORRECT_MOVE_DONE, tile1, tile2)
 
         // Then make them disapear
         this.scene.time.addEvent({
@@ -238,21 +214,13 @@ export class Grid extends Phaser.GameObjects.Container {
                 graphics.destroy();
                 tile1.destroy();
                 tile2.destroy();
-
-                // If an action has been added to this match, execute it
-                if (this.onNextMatch) {
-                    this.onNextMatch();
-                    this.onNextMatch = null;
-                }
             }
         });
 
         // Check if the game is finished
         if (this.isFinished()) {
             console.log("GAME FINISHED");
-            if (this.onFinished) {
-                this.onFinished();
-            }
+            this.scene.game.events.emit(Constants.EVENTS.GAME_FINISHED);
             return;
         }
 
