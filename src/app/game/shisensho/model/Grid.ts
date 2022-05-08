@@ -30,8 +30,8 @@ export class Grid extends Phaser.GameObjects.Container {
     /** Callback method when the grid is finished */
     onFinished: () => void;
 
-    /** TODO Callback method when a match is done. Called for each match */
-    onMatch: () => void;
+    /** Callback method when a match is done. Called for each match */
+    onMatch: (t1: Tile, t2: Tile) => void;
 
     /** Callback method when a match is done. Called only once, for the next match */
     onNextMatch: () => void;
@@ -76,7 +76,6 @@ export class Grid extends Phaser.GameObjects.Container {
         for (let i = 0; i < this.size.rows; i++) {
             this.tiles[i] = [];
         }
-
 
         let tiles = [];
 
@@ -142,146 +141,147 @@ export class Grid extends Phaser.GameObjects.Container {
             // delay += Phaser.Math.Between(0, 100);
         })
 
-
-
-
         // Events
-        let selectedTiles: Array<Tile> = [];
-
         this.each((tile: Tile) => {
-            tile.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
-                // If the grid is not interactive, nothing to do here
-                if (!this.interactive) {
-                    return;
-                }
-                // If this tile is selected, unselect it
-                if (tile.isSelected) {
-                    tile.unselect();
-                    // remove it from the selectedTiles array
-                    let index = selectedTiles.indexOf(tile);
-                    selectedTiles.splice(index, 1);
-                    return;
-                }
-
-                // If this tile is not selected, select it
-                tile.select();
-
-                // Add this tile to the selected tiles array
-                selectedTiles.push(tile);
-
-                // If there are less than 2 selected tiles, return
-                if (selectedTiles.length < 2) {
-                    return;
-                }
-
-                this.scene.game.events.emit(Constants.EVENTS.MOVE)
-
-                // If an action has been set to the next move, execute it
-                if (this.onNextMove) {
-                    this.onNextMove();
-                    this.onNextMove = null;
-                }
-
-                // Remove the two first tiles from the selected array
-                let tile1 = selectedTiles.shift();
-                let tile2 = selectedTiles.shift();
-
-                if (typeof tile1 === 'undefined' || typeof tile2 === 'undefined') {
-                    return;
-                }
-
-                // If the two tiles cannot be matched, unselected them after a while
-                if (!this.canMatch(tile1, tile2)) {
-                    this.scene.time.addEvent({
-                        delay: 500,
-                        callback: () => {
-                            tile1.unselect();
-                            tile2.unselect();
-                        }
-                    })
-                    return;
-                }
-                // Then find a path between the two tiles
-                let path = this.findPath(tile1.row, tile1.col, tile2.row, tile2.col);
-
-                // If no path can be found, unselect both tiles after few seconds
-                if (!path) {
-                    this.scene.time.addEvent({
-                        delay: 500,
-                        callback: () => {
-                            tile1.unselect();
-                            tile2.unselect();
-                        }
-                    })
-                    return;
-                }
-
-                // If a path can be found, draw it
-                let graphics = this.displayPath(path, tile1, tile2);
-
-                // Update the grid by removing both tiles                    
-                this.setTile(tile1.row, tile1.col, null);
-                this.setTile(tile2.row, tile2.col, null);
-
-                this.scene.game.events.emit(Constants.EVENTS.CORRECT_MOVE)
-
-                // Then make them disapear
-                this.scene.time.addEvent({
-                    delay: 500,
-                    callback: () => {
-                        graphics.destroy();
-                        tile1.destroy();
-                        tile2.destroy();
-
-                        // If an action has been added to this match, execute it
-                        if (this.onNextMatch) {
-                            this.onNextMatch();
-                            this.onNextMatch = null;
-                        }
-                        // Execute the onmatch action if there is one
-                        if (this.onMatch) {
-                            this.onMatch();
-                        }
-                    }
-                });
-
-                // Check if the game is finished
-                if (this.isFinished()) {
-                    console.log("GAME FINISHED");
-                    if (this.onFinished) {
-                        this.onFinished();
-                    }
-                    return;
-                }
-
-                // Check if there are still pairs to match
-                let hint = this.getHints(false);
-
-                if (hint.length === 0) {
-                    console.log("NO MORE MOVES - SHUFFLING");
-
-                    this.interactive = false;
-                    this.scene.time.addEvent({
-                        delay: 500,
-                        callback: () => {
-                            this.scene.game.events.emit(Constants.EVENTS.SHUFFLING);
-                            this.shuffleboard();
-                            this.doForAllTiles(t => t.hideImage());
-                        }
-                    })
-
-                    this.scene.time.addEvent({
-                        delay: 2500,
-                        callback: () => {
-                            this.updateBoard();
-                            this.doForAllTiles(t => t.showImage());
-                            this.scene.game.events.emit(Constants.EVENTS.SHUFFLING_DONE);
-                            this.interactive = true;
-                        }
-                    })
-                }
-            });
+            tile.on('pointerdown', this.onPointerDown.bind(this, tile));
         })
+    }
+
+    selectedTiles: Array<Tile> = [];
+
+    public onPointerDown(tile: Tile) {
+
+        // If the grid is not interactive, nothing to do here
+        if (!this.interactive) {
+            return;
+        }
+        // If this tile is selected, unselect it
+        if (tile.isSelected) {
+            tile.unselect();
+            // remove it from the selectedTiles array
+            let index = this.selectedTiles.indexOf(tile);
+            this.selectedTiles.splice(index, 1);
+            return;
+        }
+
+        // If this tile is not selected, select it
+        tile.select();
+
+        // Add this tile to the selected tiles array
+        this.selectedTiles.push(tile);
+
+        // If there are less than 2 selected tiles, return
+        if (this.selectedTiles.length < 2) {
+            return;
+        }
+
+        this.scene.game.events.emit(Constants.EVENTS.MOVE)
+
+        // If an action has been set to the next move, execute it
+        if (this.onNextMove) {
+            this.onNextMove();
+            this.onNextMove = null;
+        }
+
+        // Remove the two first tiles from the selected array
+        let tile1 = this.selectedTiles.shift();
+        let tile2 = this.selectedTiles.shift();
+
+        if (typeof tile1 === 'undefined' || typeof tile2 === 'undefined') {
+            return;
+        }
+
+        // If the two tiles cannot be matched, unselected them after a while
+        if (!this.canMatch(tile1, tile2)) {
+            this.scene.time.addEvent({
+                delay: 500,
+                callback: () => {
+                    tile1.unselect();
+                    tile2.unselect();
+                }
+            })
+            return;
+        }
+        // Then find a path between the two tiles
+        let path = this.findPath(tile1.row, tile1.col, tile2.row, tile2.col);
+
+        // If no path can be found, unselect both tiles after few seconds
+        if (!path) {
+            this.scene.time.addEvent({
+                delay: 500,
+                callback: () => {
+                    tile1.unselect();
+                    tile2.unselect();
+                }
+            })
+            return;
+        }
+
+        // If a path can be found, draw it
+        let graphics = this.displayPath(path, tile1, tile2);
+
+        // Update the grid by removing both tiles                    
+        this.setTile(tile1.row, tile1.col, null);
+        this.setTile(tile2.row, tile2.col, null);
+
+        this.scene.game.events.emit(Constants.EVENTS.CORRECT_MOVE)
+
+        // Execute the onmatch action if there is one
+        if (this.onMatch) {
+            this.onMatch(tile1, tile2);
+        }
+
+        // Then make them disapear
+        this.scene.time.addEvent({
+            delay: 500,
+            callback: () => {
+                graphics.destroy();
+                tile1.destroy();
+                tile2.destroy();
+
+                // If an action has been added to this match, execute it
+                if (this.onNextMatch) {
+                    this.onNextMatch();
+                    this.onNextMatch = null;
+                }
+            }
+        });
+
+        // Check if the game is finished
+        if (this.isFinished()) {
+            console.log("GAME FINISHED");
+            if (this.onFinished) {
+                this.onFinished();
+            }
+            return;
+        }
+
+        // Check if there are still pairs to match
+        let hint = this.getHints(false);
+
+        if (hint.length === 0) {
+            console.log("NO MORE MOVES - SHUFFLING");
+
+            this.interactive = false;
+            this.scene.time.addEvent({
+                delay: 500,
+                callback: () => {
+                    this.scene.game.events.emit(Constants.EVENTS.SHUFFLING);
+                    this.shuffleboard();
+                    this.doForAllTiles(t => t.hideImage());
+                }
+            })
+
+            this.scene.time.addEvent({
+                delay: 2500,
+                callback: () => {
+                    this.updateBoard();
+                    this.doForAllTiles(t => t.showImage());
+                    this.scene.game.events.emit(Constants.EVENTS.SHUFFLING_DONE);
+                    this.interactive = true;
+                }
+            })
+        }
     }
 
     /**

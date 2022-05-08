@@ -33,6 +33,7 @@ export class GameComponent {
 
   totalMoves = 0;
   totalCorrectMoves = 0;
+  score = 0;
 
   ngAfterViewInit() {
     this.initGame();
@@ -72,6 +73,9 @@ export class GameComponent {
     })
     this.phaserGame.events.on(Constants.EVENTS.SHUFFLING_DONE, () => {
       this.shufflepopup.hide();
+    })
+    this.phaserGame.events.on(Constants.EVENTS.ADD_SCORE, (deltascore: number) => {
+      this.score += deltascore;
     })
   }
 
@@ -115,9 +119,12 @@ export class GameComponent {
       return ""
     }
 
-    let seconds = gamesecene.seconds % 60;
-    let minutes = Math.floor(gamesecene.seconds / 60);
-    let hours = Math.floor(minutes / 60);
+    let secondsNb = gamesecene.seconds % 60;
+    let minutesNb = Math.floor(gamesecene.seconds / 60);
+    let hoursNb = Math.floor(minutesNb / 60);
+
+    let seconds = secondsNb < 10 ? "0" + secondsNb : secondsNb;
+    let minutes = minutesNb < 10 ? "0" + minutesNb : minutesNb;
 
     return `${minutes}:${seconds}`;
   }

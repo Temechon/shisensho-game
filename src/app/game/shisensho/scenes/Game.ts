@@ -1,8 +1,10 @@
 import { Helpers } from "../helpers/Helpers";
 import { Constants } from "../model/Constants";
 import { Grid } from "../model/Grid";
+import { Path } from "../model/Path";
 import { ScoreToast } from "../model/ScoreToast";
 import { Solver } from "../model/Solver";
+import { Tile } from "../model/Tile";
 
 export class Game extends Phaser.Scene {
 
@@ -11,10 +13,12 @@ export class Game extends Phaser.Scene {
     }
 
     seconds: number = 0;
+    score = 0;
 
     create() {
 
         this.seconds = 0;
+        this.score = 0;
 
         let w = this.game.config.width as number;
         let h = this.game.config.height as number;
@@ -23,7 +27,7 @@ export class Game extends Phaser.Scene {
 
         this.input.mouse.preventDefaultWheel = false;
 
-        let grid = new Grid(this, 8, 8)
+        let grid = new Grid(this, 3, 4)
 
         grid.x = w / 2;
         grid.y = h / 2;
@@ -37,15 +41,23 @@ export class Game extends Phaser.Scene {
             }
         })
 
-
-
-
         grid.onFinished = () => {
             this.game.events.emit(Constants.EVENTS.GAME_FINISHED);
             this.scene.launch('end', { rows: grid.size.rows, cols: grid.size.cols });
         }
 
-        let st = new ScoreToast(this);
+        grid.onMatch = (t1: Tile, t2: Tile) => {
+
+            // Create score toast at t1 position
+            let toast = new ScoreToast(this, 100);
+            toast.displayAt(t1.x + grid.x, t1.y + grid.y);
+
+            toast.depth = 10;
+            // Add score
+            this.score += 100;
+
+            this.game.events.emit(Constants.EVENTS.ADD_SCORE, 100);
+        }
 
         let graphics: Phaser.GameObjects.Graphics;
 
