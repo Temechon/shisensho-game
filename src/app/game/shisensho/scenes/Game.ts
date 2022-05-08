@@ -1,4 +1,5 @@
 import { Helpers } from "../helpers/Helpers";
+import { Combobar } from "../model/Combobar";
 import { Constants } from "../model/Constants";
 import { Grid } from "../model/Grid";
 import { Path } from "../model/Path";
@@ -27,10 +28,18 @@ export class Game extends Phaser.Scene {
 
         this.input.mouse.preventDefaultWheel = false;
 
-        let grid = new Grid(this, 3, 4)
+
+        let grid = new Grid(this, 13, 8)
 
         grid.x = w / 2;
-        grid.y = h / 2;
+        grid.y = h / 2 + 45;
+
+        // Combo bar
+        let combobar = new Combobar(this, grid.widthPx * grid.scale * 1.1);
+        combobar.x = w / 2;
+        combobar.y = 75
+        this.add.existing(combobar);
+        combobar.setProgress(0.5);
 
         this.time.addEvent({
             delay: 1000,

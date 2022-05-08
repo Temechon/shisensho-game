@@ -92,6 +92,7 @@ export class GameComponent {
     // Reset game ui
     this.totalCorrectMoves = 0;
     this.totalMoves = 0;
+    this.score = 0;
 
   }
 
