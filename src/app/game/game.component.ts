@@ -39,26 +39,7 @@ export class GameComponent {
     this.initGame();
   }
 
-
-  private initGame() {
-
-    const config = {
-      parent: 'game',
-      type: Phaser.AUTO,
-      backgroundColor: '#78D9B2',
-      scale: {
-        mode: Phaser.Scale.FIT,
-        width: window.innerWidth + 15,
-        height: window.innerHeight + 15,
-      },
-      scene: [
-        Boot,
-        Game,
-        End
-      ]
-    };
-    this.phaserGame = new Phaser.Game(config);
-
+  private initGameEvents() {
     this.phaserGame.events.on(Constants.EVENTS.GAME_FINISHED, () => {
       this.replaypopup.show();
     })
@@ -79,13 +60,37 @@ export class GameComponent {
     })
   }
 
+
+  private initGame() {
+
+    const config = {
+      parent: 'game',
+      type: Phaser.AUTO,
+      backgroundColor: '#78D9B2',
+      scale: {
+        mode: Phaser.Scale.FIT,
+        width: window.innerWidth + 15,
+        height: window.innerHeight + 15,
+      },
+      scene: [
+        Boot,
+        Game,
+        End
+      ]
+    };
+    this.phaserGame = new Phaser.Game(config);
+    this.initGameEvents();
+  }
+
   /**
    * Relaunch a game with the same parameters
    */
   replay() {
     this.phaserGame.scene.stop('end');
 
-    // TODO : Removes all event listeners used in the Game scene.
+    // Removes all event listeners used in the Game scene, and reinitializes them
+    this.phaserGame.events.removeAllListeners();
+    this.initGameEvents();
 
     this.phaserGame.scene.start('game');
 

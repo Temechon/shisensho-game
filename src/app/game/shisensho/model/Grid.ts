@@ -142,6 +142,11 @@ export class Grid extends Phaser.GameObjects.Container {
         if (!this.interactive) {
             return;
         }
+        // If the tile currently animated, nothing to do here
+        if (tile.animated) {
+            return;
+        }
+
         // If this tile is selected, unselect it
         if (tile.isSelected) {
             tile.unselect();
@@ -174,11 +179,14 @@ export class Grid extends Phaser.GameObjects.Container {
 
         // If the two tiles cannot be matched, unselected them after a while
         if (!this.canMatch(tile1, tile2)) {
+            tile1.animated = tile2.animated = true;
+            this.scene.game.events.emit(Constants.EVENTS.INCORRECT_MOVE_DONE, tile1, tile2)
             this.scene.time.addEvent({
                 delay: 500,
                 callback: () => {
                     tile1.unselect();
                     tile2.unselect();
+                    tile1.animated = tile2.animated = false;
                 }
             })
             return;
@@ -188,9 +196,12 @@ export class Grid extends Phaser.GameObjects.Container {
 
         // If no path can be found, unselect both tiles after few seconds
         if (!path) {
+            this.scene.game.events.emit(Constants.EVENTS.INCORRECT_MOVE_DONE, tile1, tile2)
+            tile1.animated = tile2.animated = true;
             this.scene.time.addEvent({
                 delay: 500,
                 callback: () => {
+                    tile1.animated = tile2.animated = false;
                     tile1.unselect();
                     tile2.unselect();
                 }
@@ -206,11 +217,13 @@ export class Grid extends Phaser.GameObjects.Container {
         this.setTile(tile2.row, tile2.col, null);
 
         this.scene.game.events.emit(Constants.EVENTS.CORRECT_MOVE_DONE, tile1, tile2)
+        tile1.animated = tile2.animated = true;
 
         // Then make them disapear
         this.scene.time.addEvent({
             delay: 500,
             callback: () => {
+                tile1.animated = tile2.animated = false;
                 graphics.destroy();
                 tile1.destroy();
                 tile2.destroy();
@@ -657,6 +670,11 @@ export class Grid extends Phaser.GameObjects.Container {
 
             p.x -= this.widthPx / 2 - this.tileWidth / 2;
             p.y -= this.heightPx / 2 - this.tileHeight / 2;
+
+            p.y = Phaser.Math.Clamp(p.y, - this.heightPx / 2 - 25, this.heightPx / 2 + 25);
+            console.log(this.heightPx);
+
+
             return p;
         })
 

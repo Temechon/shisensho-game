@@ -9,6 +9,7 @@ export class Tile extends Phaser.GameObjects.Container {
     private border: Phaser.GameObjects.Graphics;
 
     isSelected = false;
+    animated = false;
 
     static THICKNESS = 6;
 

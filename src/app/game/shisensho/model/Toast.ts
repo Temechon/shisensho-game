@@ -1,28 +1,30 @@
 import randomColor from "randomcolor";
 
-export class ScoreToast extends Phaser.GameObjects.Container {
+export class Toast extends Phaser.GameObjects.Container {
 
-    colorHex: string;
     text: Phaser.GameObjects.Text;
 
-    constructor(scene: Phaser.Scene, score: number) {
+    constructor(scene: Phaser.Scene, options: {
+        text: string,
+        fontSize?: number,
+        color: string,
+    }) {
         super(scene);
 
-        this.colorHex = randomColor({ luminosity: 'dark', format: 'hex' })
-
+        options.fontSize = options.fontSize || 40;
         // Text
         let style: Phaser.Types.GameObjects.Text.TextStyle = {
             fontFamily: 'Jost',
             fontStyle: 'bold',
-            fontSize: "40px",
-            color: this.colorHex,
+            fontSize: `${options.fontSize}px`,
+            color: options.color,
             stroke: '#fff',
             strokeThickness: 7,
             align: 'center'
         };
-        let text = this.scene.add.text(0, 0, `+${score}!`, style)
-        text.setOrigin(0.5, 0.5);
-        this.add(text);
+        let toastText = this.scene.add.text(0, 0, options.text, style)
+        toastText.setOrigin(0.5, 0.5);
+        this.add(toastText);
 
         this.scene.add.existing(this);
     }

@@ -1,5 +1,3 @@
-import randomColor from "randomcolor";
-
 export class Combobar extends Phaser.GameObjects.Container {
 
     bot: Phaser.GameObjects.Graphics;
@@ -12,6 +10,9 @@ export class Combobar extends Phaser.GameObjects.Container {
 
     /** The time to empty the combo bar */
     totalduration = 6000;
+
+    /** The number of correct moves during the combo time */
+    combostrike = 0;
 
     animation: Phaser.Tweens.Tween;
 
@@ -53,12 +54,20 @@ export class Combobar extends Phaser.GameObjects.Container {
     }
 
     start() {
+        this.combostrike++;
         this.visible = true;
         this.animation.resume();
     }
 
-    stop() {
+    pause() {
         this.animation.pause();
+    }
+
+    stop() {
+        this.combostrike = 0;
+        this.reset();
+        this.animation.stop();
+        this.visible = false;
     }
 
     setProgress(percent: number) {
@@ -75,13 +84,13 @@ export class Combobar extends Phaser.GameObjects.Container {
      */
     get multiplier(): number {
         if (this.progress > 0.75) {
-            return 3;
+            return 3 * (this.combostrike + 1);
         }
         if (this.progress > 0.5) {
-            return 2;
+            return 2 * (this.combostrike + 1);
         }
         if (this.progress > 0.25) {
-            return 1.5;
+            return 1.5 * (this.combostrike + 1);
         }
         return 1;
     }
