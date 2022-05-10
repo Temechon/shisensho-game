@@ -108,7 +108,7 @@ export class GameComponent {
     this.phaserGame.scene.run('game');
   }
 
-  options() {
+  optionsPopup() {
     this.phaserGame.scene.pause('game');
     this.optionspopup.show();
   }

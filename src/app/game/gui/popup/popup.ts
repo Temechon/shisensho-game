@@ -14,7 +14,7 @@ export abstract class Popup {
 
     /** Output event emitted when the action button is clicked */
     @Output()
-    public onClose = new EventEmitter();
+    public onClose = new EventEmitter<any>();
 
 
     action() {
