@@ -8,6 +8,7 @@ import { ReplayPopupComponent } from './game/gui/popup/replay-popup/replay-popup
 import { ShufflePopupComponent } from './game/gui/popup/shuffle-popup/shuffle-popup.component';
 import { OptionsPopupComponent } from './game/gui/popup/options-popup/options-popup.component';
 import { ToggleComponent } from './game/gui/toggle/toggle.component';
+import { NewgamePopupComponent } from './game/gui/popup/newgame-popup/newgame-popup.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { ToggleComponent } from './game/gui/toggle/toggle.component';
     ReplayPopupComponent,
     ShufflePopupComponent,
     OptionsPopupComponent,
-    ToggleComponent
+    ToggleComponent,
+    NewgamePopupComponent
   ],
   imports: [
     BrowserModule,

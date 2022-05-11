@@ -14,7 +14,13 @@ export class Game extends Phaser.Scene {
 
     seconds: number = 0;
     score = 0;
+    size: { rows: number, cols: number } = { rows: 4, cols: 4 };
 
+    init(data: { rows: number, cols: number }) {
+        if (data.rows) {
+            this.size = { rows: data.rows, cols: data.cols };
+        }
+    }
     create() {
 
         this.seconds = 0;
@@ -26,7 +32,8 @@ export class Game extends Phaser.Scene {
         this.input.mouse.preventDefaultWheel = false;
 
         // Grid
-        let grid = new Grid(this, 4, 4)
+        let grid = new Grid(this, this.size.rows, this.size.cols);
+
         grid.x = w / 2;
         grid.y = h / 2 + 45;
 

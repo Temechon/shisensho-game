@@ -3,6 +3,7 @@ import { Path } from "./Path";
 import { Tile } from "./Tile";
 import * as _ from 'underscore';
 import { Constants } from "./Constants";
+import { Solver } from "./Solver";
 
 export class Grid extends Phaser.GameObjects.Container {
 
@@ -100,7 +101,13 @@ export class Grid extends Phaser.GameObjects.Container {
             tileHeight: this.tileHeight
         }, this.size)
 
-        this.shuffleboard(true);
+
+        this.shuffleboard();
+        while (Solver.Solve(this) === null) {
+            console.log("Shuffling");
+            this.shuffleboard();
+        }
+        this.updateBoard();
 
         // Animate all tiles to their positions
         let delay = 0;
@@ -672,8 +679,6 @@ export class Grid extends Phaser.GameObjects.Container {
             p.y -= this.heightPx / 2 - this.tileHeight / 2;
 
             p.y = Phaser.Math.Clamp(p.y, - this.heightPx / 2 - 25, this.heightPx / 2 + 25);
-            console.log(this.heightPx);
-
 
             return p;
         })

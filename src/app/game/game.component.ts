@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import * as Phaser from 'phaser';
 import { BehaviorSubject } from 'rxjs';
+import { NewgamePopupComponent } from './gui/popup/newgame-popup/newgame-popup.component';
 import { OptionsPopupComponent } from './gui/popup/options-popup/options-popup.component';
 import { ReplayPopupComponent } from './gui/popup/replay-popup/replay-popup.component';
 import { ShufflePopupComponent } from './gui/popup/shuffle-popup/shuffle-popup.component';
@@ -28,12 +29,18 @@ export class GameComponent {
   @ViewChild(OptionsPopupComponent)
   optionspopup: OptionsPopupComponent;
 
+  /** The popup to display when a new game button is selected */
+  @ViewChild(NewgamePopupComponent)
+  newgamepopup: NewgamePopupComponent;
+
   /** Instance of the Phaser game */
   phaserGame: Phaser.Game;
 
   totalMoves = 0;
   totalCorrectMoves = 0;
   score = 0;
+  /** The board size */
+  size = { rows: 4, cols: 4 };
 
   ngAfterViewInit() {
     this.initGame();
@@ -80,6 +87,7 @@ export class GameComponent {
     };
     this.phaserGame = new Phaser.Game(config);
     this.initGameEvents();
+
   }
 
   /**
@@ -92,7 +100,7 @@ export class GameComponent {
     this.phaserGame.events.removeAllListeners();
     this.initGameEvents();
 
-    this.phaserGame.scene.start('game');
+    this.phaserGame.scene.start('game', this.size);
 
     this.replaypopup.hide();
     this.shufflepopup.hide();
@@ -108,9 +116,37 @@ export class GameComponent {
     this.phaserGame.scene.run('game');
   }
 
+  newgame($event: { rows: number, cols: number }) {
+
+    this.size.rows = $event.rows;
+    this.size.cols = $event.cols;
+
+    this.phaserGame.scene.stop('game');
+
+    // Removes all event listeners used in the Game scene, and reinitializes them
+    this.phaserGame.events.removeAllListeners();
+    this.initGameEvents();
+
+    this.phaserGame.scene.start('game', this.size);
+
+    this.replaypopup.hide();
+    this.shufflepopup.hide();
+    this.newgamepopup.hide();
+
+    // Reset game ui
+    this.totalCorrectMoves = 0;
+    this.totalMoves = 0;
+    this.score = 0;
+  }
+
   optionsPopup() {
     this.phaserGame.scene.pause('game');
     this.optionspopup.show();
+  }
+
+  newgamePopup() {
+    this.phaserGame.scene.pause('game');
+    this.newgamepopup.show();
   }
 
   hint() {
@@ -136,5 +172,18 @@ export class GameComponent {
     let minutes = minutesNb < 10 ? "0" + minutesNb : minutesNb;
 
     return `${minutes}:${seconds}`;
+  }
+
+  show(list: HTMLDivElement) {
+    list.classList.add('flex');
+    list.classList.remove('hidden');
+    console.log("show");
+
+  }
+
+  hide(list: HTMLDivElement) {
+    list.classList.remove('flex');
+    list.classList.add('hidden');
+    console.log("hide");
   }
 }
