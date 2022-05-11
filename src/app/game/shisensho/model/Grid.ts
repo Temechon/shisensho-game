@@ -103,10 +103,10 @@ export class Grid extends Phaser.GameObjects.Container {
 
 
         this.shuffleboard();
-        while (Solver.Solve(this) === null) {
-            console.log("Shuffling");
-            this.shuffleboard();
-        }
+        // while (Solver.Solve(this) === null) {
+        //     // console.log("Shuffling");
+        //     this.shuffleboard();
+        // }
         this.updateBoard();
 
         // Animate all tiles to their positions

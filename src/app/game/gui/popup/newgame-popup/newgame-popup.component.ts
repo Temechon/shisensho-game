@@ -8,7 +8,7 @@ import { Popup } from '../popup';
 })
 export class NewgamePopupComponent extends Popup {
 
-  size: any = { rows: 6, cols: 6 }
+  size: any = { rows: 8, cols: 18 }
 
   /** Output event emitted when the action button is clicked */
   @Output()

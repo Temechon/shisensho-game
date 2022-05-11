@@ -32,7 +32,7 @@ export class Game extends Phaser.Scene {
         this.input.mouse.preventDefaultWheel = false;
 
         // Grid
-        let grid = new Grid(this, this.size.rows, this.size.cols);
+        let grid = new Grid(this, this.size.cols, this.size.rows);
 
         grid.x = w / 2;
         grid.y = h / 2 + 45;
