@@ -15,6 +15,11 @@ export class Grid extends Phaser.GameObjects.Container {
     public static GUTTER_SIZE_H = 15;
 
     /**
+     * Contains all tiles names that are created on this grid
+     */
+    tilesNames: string[] = [];
+
+    /**
      * 
      * 0  1  2  3  4 (cols) = width
      * 1
@@ -45,6 +50,23 @@ export class Grid extends Phaser.GameObjects.Container {
     private tileHeight: number = 0;
 
 
+    createTiles(tileSize: { width: number, height: number }) {
+        let nbOfPairs = this.size.rows * this.size.cols / 2;
+        let tiles = [];
+
+        let counter = 0;
+        for (let [type, nbTiles] of Grid.TILES_TYPES) {
+            for (let i = 0; i < nbTiles && counter++ < nbOfPairs; i++) {
+                for (let k = 0; k < 2; k++) {
+                    let t = new Tile(this.scene, 0, 0, tileSize, `${type}/${i}`)
+                    tiles.push(t);
+                }
+            }
+        }
+        return tiles;
+    }
+
+
     constructor(
         scene: Phaser.Scene,
         nb_cols: number,
@@ -56,7 +78,7 @@ export class Grid extends Phaser.GameObjects.Container {
         this.tileWidth = (tileCache.width + 25) * ratio;
         this.tileHeight = this.tileWidth * 1.3
 
-        let size = { width: this.tileWidth, height: this.tileHeight };
+        let tileSize = { width: this.tileWidth, height: this.tileHeight };
         this.size = { cols: nb_cols, rows: nb_lines };
 
         this.scene.add.existing(this);
@@ -67,18 +89,9 @@ export class Grid extends Phaser.GameObjects.Container {
 
         let tiles = [];
 
-        // Build two tiles for each tile type
-        for (let [type, nbTiles] of Grid.TILES_TYPES) {
-            for (let i = 0; i < nbTiles; i++) {
-                for (let k = 0; k < 2; k++) {
-                    let t = new Tile(this.scene, 0, 0, size, `${type}/${i}`)
-                    tiles.push(t);
-                }
-            }
-        }
-
-        // Remove all useless tiles
-        tiles = _.head(tiles, nb_cols * nb_lines);
+        tiles = this.createTiles(tileSize);
+        // save all tiles names
+        this.tilesNames = tiles.map(t => t.tileid);
 
         // Create a sorted array of tiles
         let tcount = 0;
@@ -117,10 +130,6 @@ export class Grid extends Phaser.GameObjects.Container {
             t.y = -this.heightPx / 2 - 200
         })
         this.doForAllTiles(t => {
-            // let pos = this.getTilePositionOnBoard(t);
-            // t.x = pos.x;
-            // t.y = pos.y;
-            // console.log(pos);
 
             this.scene.add.tween({
                 targets: t,
@@ -132,7 +141,6 @@ export class Grid extends Phaser.GameObjects.Container {
                 },
                 ease: Phaser.Math.Easing.Bounce.Out
             })
-            // delay += Phaser.Math.Between(0, 100);
         })
 
         // Events

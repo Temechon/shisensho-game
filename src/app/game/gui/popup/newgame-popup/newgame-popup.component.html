@@ -8,16 +8,55 @@
             Generate a new game
         </div>
 
+        <!-- Content -->
+        <div class="flex flex-col space-y-2">
+            <!-- row -->
+            <div class="flex items-center ml-24">
+                <!-- Name -->
+                <div class="w-32">
+                    Easy
+                </div>
+                <div class="mx-2 bg-green-400 text-white rounded-lg px-3 py-1  cursor-pointer" (click)="play(4,4)">
+                    4x4
+                </div>
+            </div>
+            <!-- row -->
+            <div class="flex items-center ml-24">
+                <!-- Name -->
+                <div class="w-32">
+                    Medium
+                </div>
+                <div class="mx-2 bg-green-400 text-white rounded-lg px-3 py-1  cursor-pointer" (click)="play(6,9)">
+                    6x9
+                </div>
+            </div>
+            <!-- row -->
+            <div class="flex items-center ml-24">
+                <!-- Name -->
+                <div class="w-32">
+                    Hard
+                </div>
+                <div class="mx-2 bg-green-400 text-white rounded-lg px-3 py-1  cursor-pointer" (click)="play(8,12)">
+                    8x12
+                </div>
+            </div>
+            <!-- row -->
+            <div class="flex items-center ml-24">
+                <!-- Name -->
+                <div class="w-32 font-semibold">
+                    Hardest
+                </div>
+                <div class="mx-2 bg-green-400 text-white rounded-lg px-3 py-1  cursor-pointer" (click)="play(8,18)">
+                    8x18
+                </div>
+            </div>
+        </div>
+
 
         <div class="flex items-center justify-center mt-8">
 
-            <div (click)="hide()"
-                class="mx-2 text-xs xl:text-base bg-red-400 text-white rounded-lg px-3 py-1  cursor-pointer">
+            <div (click)="hide()" class="mx-2 text-base bg-red-400 text-white rounded-lg px-3 py-1  cursor-pointer">
                 Cancel
-            </div>
-            <div (click)="play()"
-                class="mx-2 text-xs xl:text-base bg-board-green rounded-lg px-3 py-1 text-white cursor-pointer">
-                PLAY!
             </div>
         </div>
     </div>

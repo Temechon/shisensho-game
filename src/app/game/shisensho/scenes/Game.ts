@@ -14,7 +14,7 @@ export class Game extends Phaser.Scene {
 
     seconds: number = 0;
     score = 0;
-    size: { rows: number, cols: number } = { rows: 4, cols: 4 };
+    size: { rows: number, cols: number } = { rows: 2, cols: 2 };
 
     init(data: { rows: number, cols: number }) {
         if (data.rows) {
@@ -76,7 +76,9 @@ export class Game extends Phaser.Scene {
 
         this.game.events.on(Constants.EVENTS.GAME_FINISHED, () => {
             combobar.stop();
-            this.scene.launch('end', { rows: grid.size.rows, cols: grid.size.cols });
+            this.scene.launch('end', {
+                rows: grid.size.rows, cols: grid.size.cols, tilesNames: grid.tilesNames
+            });
         });
 
         this.game.events.on(Constants.EVENTS.INCORRECT_MOVE_DONE, (t1: Tile, t2: Tile) => {
