@@ -141,8 +141,8 @@ export class Tile extends Phaser.GameObjects.Container {
         this.bot.fillStyle(0x333);
         this.bot.fillRoundedRect(-w / 2, -h / 2, w, h, w * 0.1);
 
-        this.border.fillStyle(0xff0000);
-        this.border.lineStyle(8 * ratio, 0xff0000);
+        this.border.fillStyle(0xa78bfa);
+        this.border.lineStyle(8 * ratio, 0xa78bfa);
         this.border.strokeRoundedRect(-w / 2, -h / 2, w, h, w * 0.1);
         this.border.alpha = 0;
     }

@@ -17,7 +17,7 @@ export class Toast extends Phaser.GameObjects.Container {
             fontFamily: 'Jost',
             fontStyle: 'bold',
             fontSize: `${options.fontSize}px`,
-            color: options.color,
+            color: "#a78bfa",
             stroke: '#fff',
             strokeThickness: 7,
             align: 'center'

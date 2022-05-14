@@ -681,7 +681,7 @@ export class Grid extends Phaser.GameObjects.Container {
             y: 0,
             add: false
         });
-        graphics.lineStyle(15 * ratio, 0xff0000);
+        graphics.lineStyle(15 * ratio, 0xa78bfa);
         this.add(graphics);
 
         let points = path.points.map((pathpoint: { row: number, col: number }) => {
