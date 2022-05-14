@@ -1,4 +1,4 @@
-import { Directive, ElementRef, EventEmitter, Output, ViewChild } from "@angular/core";
+import { Directive, ElementRef, EventEmitter, Input, Output, ViewChild } from "@angular/core";
 
 
 @Directive()
@@ -12,13 +12,15 @@ export abstract class Popup {
     @Output()
     public onAction = new EventEmitter();
 
-    /** Output event emitted when the action button is clicked */
+    /** Output event emitted when the popup is closed */
     @Output()
-    public onClose = new EventEmitter<any>();
+    public onClose = new EventEmitter();
 
+    /** Data given to the popup when opening it up */
+    public inputData: any;
 
-    action() {
-        this.onAction.emit();
+    action(data?: any) {
+        this.onAction.emit(data);
     }
 
     constructor() { }
@@ -26,7 +28,8 @@ export abstract class Popup {
     ngOnInit(): void {
     }
 
-    public show() {
+    public show(data?: any) {
+        this.inputData = data;
         let popup = this.popup.nativeElement as HTMLDivElement;
         popup.classList.remove('hidden');
         popup.classList.add('flex');
@@ -36,6 +39,10 @@ export abstract class Popup {
         let popup = this.popup.nativeElement as HTMLDivElement;
         popup.classList.add('hidden');
         popup.classList.remove('flex');
+    }
+
+    public close() {
+        this.hide();
         this.onClose.emit();
     }
 }

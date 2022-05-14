@@ -1,3 +1,5 @@
+import { Constants } from "./Constants";
+
 export class Combobar extends Phaser.GameObjects.Container {
 
     bot: Phaser.GameObjects.Graphics;
@@ -9,7 +11,7 @@ export class Combobar extends Phaser.GameObjects.Container {
     progress = 1;
 
     /** The time to empty the combo bar */
-    totalduration = 6000;
+    totalduration = 10000;
 
     /** The number of correct moves during the combo time */
     combostrike = 0;
@@ -43,10 +45,15 @@ export class Combobar extends Phaser.GameObjects.Container {
             },
             onComplete: () => {
                 this.visible = false;
-                this.combostrike = 0;
+                this.resetComboStrike();
             }
         })
         this.animation.stop();
+    }
+
+    resetComboStrike() {
+        this.scene.game.events.emit(Constants.EVENTS.COMBO_BREAK, this.combostrike);
+        this.combostrike = 0;
     }
 
     /**
@@ -69,7 +76,7 @@ export class Combobar extends Phaser.GameObjects.Container {
     }
 
     stop() {
-        this.combostrike = 0;
+        this.resetComboStrike();
         this.setProgress(0);
         this.animation.stop();
         this.visible = false;

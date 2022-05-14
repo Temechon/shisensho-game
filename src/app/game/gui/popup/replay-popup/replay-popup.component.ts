@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Popup } from '../popup';
 
 @Component({
@@ -8,5 +8,10 @@ import { Popup } from '../popup';
 })
 export class ReplayPopupComponent extends Popup {
 
+
+  action() {
+    super.action();
+    this.close();
+  }
 
 }

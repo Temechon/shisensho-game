@@ -39,7 +39,7 @@
     <replay-popup (onAction)="replay()"></replay-popup>
     <shuffle-popup></shuffle-popup>
     <options-popup (onClose)="unpause()"></options-popup>
-    <newgame-popup (onPlay)="newgame($event)"></newgame-popup>
+    <newgame-popup (onAction)="newgame($event)" (onClose)="unpause()"></newgame-popup>
 
     <!-- The game! -->
     <div id="game"></div>

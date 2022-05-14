@@ -1,7 +1,7 @@
 <div #popup class="absolute hidden  inset-0 bg-black/75 select-none">
 
     <div
-        class="z-10 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border px-6 py-6 bg-white rounded-md shadow-md flex-col items-center">
+        class="z-10 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border px-12 py-6 bg-white rounded-md shadow-md flex-col items-center">
 
         <!-- Title -->
         <div class="font-extrabold text-3xl uppercase mb-8 text-center">
@@ -106,7 +106,7 @@
 
         <div class="flex items-center justify-center mt-8">
 
-            <div (click)="hide()" class="mx-2 text-base bg-red-400 text-white rounded-lg px-3 py-1  cursor-pointer">
+            <div (click)="close()" class="mx-2 text-base bg-red-400 text-white rounded-lg px-3 py-1  cursor-pointer">
                 Cancel
             </div>
         </div>

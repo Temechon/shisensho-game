@@ -16,6 +16,8 @@ export abstract class Constants {
 
         SHOW_HINT: "hint:show",
 
-        ADD_SCORE: "add:score"
+        ADD_SCORE: "add:score",
+
+        COMBO_BREAK: "combo:break"
     }
 }

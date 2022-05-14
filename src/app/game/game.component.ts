@@ -39,8 +39,10 @@ export class GameComponent {
   totalMoves = 0;
   totalCorrectMoves = 0;
   score = 0;
+  bestcombo = 0;
+
   /** The board size */
-  size = { rows: 4, cols: 4 };
+  size = { rows: 2, cols: 2 };
 
   ngAfterViewInit() {
     this.initGame();
@@ -48,7 +50,14 @@ export class GameComponent {
 
   private initGameEvents() {
     this.phaserGame.events.on(Constants.EVENTS.GAME_FINISHED, () => {
-      this.replaypopup.show();
+      this.replaypopup.show({
+        score: this.score,
+        totalTiles: this.size.cols * this.size.rows,
+        totalMoves: this.totalMoves,
+        totalCorrectMoves: this.totalCorrectMoves,
+        time: this.getTime(),
+        bestcombo: this.bestcombo
+      });
     })
     this.phaserGame.events.on(Constants.EVENTS.MOVE_DONE, () => {
       this.totalMoves++
@@ -65,6 +74,13 @@ export class GameComponent {
     this.phaserGame.events.on(Constants.EVENTS.ADD_SCORE, (deltascore: number) => {
       this.score += deltascore;
     })
+    this.phaserGame.events.on(Constants.EVENTS.COMBO_BREAK, (combo: number) => {
+      if (this.bestcombo < combo) {
+        this.bestcombo = combo;
+        console.log("Best combo !!", this.bestcombo);
+
+      }
+    });
   }
 
 
@@ -102,14 +118,12 @@ export class GameComponent {
 
     this.phaserGame.scene.start('game', this.size);
 
-    this.replaypopup.hide();
-    this.shufflepopup.hide();
-    this.newgamepopup.hide();
 
     // Reset game ui
     this.totalCorrectMoves = 0;
     this.totalMoves = 0;
     this.score = 0;
+    this.bestcombo = 0;
 
   }
 
@@ -120,6 +134,7 @@ export class GameComponent {
   newgame($event: { rows: number, cols: number }) {
 
     console.log("new game here");
+    this.newgamepopup.hide();
 
     this.size.rows = $event.rows;
     this.size.cols = $event.cols;
@@ -132,13 +147,11 @@ export class GameComponent {
 
     this.phaserGame.scene.start('game', this.size);
 
-    this.replaypopup.hide();
-    this.shufflepopup.hide();
-
     // Reset game ui
     this.totalCorrectMoves = 0;
     this.totalMoves = 0;
     this.score = 0;
+    this.bestcombo = 0;
   }
 
   optionsPopup() {
@@ -176,16 +189,4 @@ export class GameComponent {
     return `${minutes}:${seconds}`;
   }
 
-  show(list: HTMLDivElement) {
-    list.classList.add('flex');
-    list.classList.remove('hidden');
-    console.log("show");
-
-  }
-
-  hide(list: HTMLDivElement) {
-    list.classList.remove('flex');
-    list.classList.add('hidden');
-    console.log("hide");
-  }
 }

@@ -1,5 +1,5 @@
 <div #popup
-    class=" z-10 hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border px-4 py-2 w-1/2 bg-white rounded-md shadow-md flex-col items-center">
+    class=" z-10 hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border px-4 py-2 min-w-[65%] bg-white rounded-md shadow-md flex-col items-center">
     <!-- Title -->
     <div class="font-extrabold text-3xl uppercase ">
         Congrats!
@@ -10,6 +10,24 @@
     </div>
 
     <!-- Score -->
+    <table class="w-11/12 m-auto border my-4">
+        <tr class="font-semibold bg-board-purple text-white text-center">
+            <td>Time</td>
+            <td>Number of tiles</td>
+            <td>Moves</td>
+            <td>Errors</td>
+            <td>Best combo</td>
+            <td>Score</td>
+        </tr>
+        <tr class="text-center">
+            <td>{{inputData?.time}}</td>
+            <td>{{inputData?.totalTiles}}</td>
+            <td>{{inputData?.totalMoves}}</td>
+            <td>{{inputData?.totalMoves - inputData?.totalCorrectMoves}}</td>
+            <td>{{inputData?.bestcombo}}</td>
+            <td>{{inputData?.score}}</td>
+        </tr>
+    </table>
 
 
     <!-- Replay button -->

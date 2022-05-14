@@ -7,6 +7,7 @@ module.exports = {
 
       colors: {
         'board-green': '#78D9B2',
+        'board-purple': '#a78bfa',
       },
 
       fontFamily: {
