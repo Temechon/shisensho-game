@@ -116,10 +116,14 @@ export class Grid extends Phaser.GameObjects.Container {
 
 
         this.shuffleboard();
-        // while (Solver.Solve(this) === null) {
-        //     // console.log("Shuffling");
-        //     this.shuffleboard();
-        // }
+        // Threshold : The number of possible moves this grid should have to be displayed (to avoid grid with only one move)
+        const thresholdToShuffle = this.size.cols * this.size.rows / 4
+        // Ideal ratio : the number of possible moves is equal to the number of pairs of tiles.
+        const idealRatio = this.size.cols / this.size.rows / 2;
+
+        while (Solver.GetMaxPath(this).length < thresholdToShuffle) {
+            this.shuffleboard();
+        }
         this.updateBoard();
 
         // Animate all tiles to their positions

@@ -241,6 +241,31 @@ export class Solver {
         return solver._solve(minigrid);
     }
 
+
+    static GetMaxPath(grid: Grid) {
+        let minigrid = Minigrid.FromGrid(grid);
+        let solver = new Solver();
+        return solver._getMaxPath(minigrid);
+    }
+
+    private _getMaxPath(minigrid: Minigrid): Array<{ t1: MiniTile, t2: MiniTile }> {
+
+        let res = [];
+        let newgrid = minigrid.clone();
+
+        // Get all possibles solutions
+        let allMoves = minigrid.getHints();
+
+        while (allMoves.length > 0) {
+            for (let move of allMoves) {
+                res.push(move);
+                newgrid = this.removeSolution(newgrid, move);
+            }
+            allMoves = minigrid.getHints();
+        }
+        return res;
+    }
+
     private _solve(minigrid: Minigrid): Array<{ t1: MiniTile, t2: MiniTile }> {
 
         // Get all possibles solutions

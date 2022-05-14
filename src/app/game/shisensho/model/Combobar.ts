@@ -31,7 +31,7 @@ export class Combobar extends Phaser.GameObjects.Container {
         this.add(this.bot);
         this.add(this.top);
 
-        this.visible = false;
+        // this.visible = false;
 
         this.animation = this.scene.tweens.addCounter({
             from: 1,
@@ -43,29 +43,34 @@ export class Combobar extends Phaser.GameObjects.Container {
             },
             onComplete: () => {
                 this.visible = false;
-            },
-            paused: true
+                this.combostrike = 0;
+            }
         })
+        this.animation.stop();
     }
 
+    /**
+     * The progress bar animation is reset but not the combo strike!
+     * Done when a new correct move has been done.
+     */
     reset() {
+        this.combostrike++;
         this.setProgress(1);
         this.animation.restart();
-    }
-
-    start() {
-        this.combostrike++;
         this.visible = true;
-        this.animation.resume();
     }
 
     pause() {
         this.animation.pause();
     }
 
+    resume() {
+        this.animation.resume();
+    }
+
     stop() {
         this.combostrike = 0;
-        this.reset();
+        this.setProgress(0);
         this.animation.stop();
         this.visible = false;
     }

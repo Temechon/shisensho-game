@@ -1,4 +1,4 @@
-<div #popup class="absolute flex inset-0 bg-black/75 select-none">
+<div #popup class="absolute hidden  inset-0 bg-black/75 select-none">
 
     <div
         class="z-10 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border px-6 py-6 bg-white rounded-md shadow-md flex-col items-center">
@@ -9,48 +9,99 @@
         </div>
 
         <!-- Content -->
-        <div class="flex flex-col space-y-2">
-            <!-- row -->
-            <div class="flex items-center ml-24">
-                <!-- Name -->
-                <div class="w-32">
-                    Easy
-                </div>
-                <div class="mx-2 bg-green-400 text-white rounded-lg px-3 py-1  cursor-pointer" (click)="play(4,4)">
-                    4x4
-                </div>
-            </div>
-            <!-- row -->
-            <div class="flex items-center ml-24">
-                <!-- Name -->
-                <div class="w-32">
-                    Medium
-                </div>
-                <div class="mx-2 bg-green-400 text-white rounded-lg px-3 py-1  cursor-pointer" (click)="play(6,9)">
-                    6x9
-                </div>
-            </div>
-            <!-- row -->
-            <div class="flex items-center ml-24">
-                <!-- Name -->
-                <div class="w-32">
-                    Hard
-                </div>
-                <div class="mx-2 bg-green-400 text-white rounded-lg px-3 py-1  cursor-pointer" (click)="play(8,12)">
-                    8x12
-                </div>
-            </div>
-            <!-- row -->
-            <div class="flex items-center ml-24">
-                <!-- Name -->
-                <div class="w-32 font-semibold">
-                    Hardest
-                </div>
-                <div class="mx-2 bg-green-400 text-white rounded-lg px-3 py-1  cursor-pointer" (click)="play(8,18)">
-                    8x18
-                </div>
-            </div>
-        </div>
+
+        <table class="m-auto">
+            <tr class="h-10">
+                <td class="w-32">Easy</td>
+                <td>
+                    <div class="text-center bg-green-400 text-white rounded-lg px-3 py-1  cursor-pointer"
+                        (click)="play(4,4)">
+                        4x4
+                    </div>
+                </td>
+                <td>
+                    <div class="text-center bg-green-400 text-white rounded-lg px-3 py-1  cursor-pointer"
+                        (click)="play(4,5)">
+                        4x5
+                    </div>
+                </td>
+                <td>
+                    <div class="text-center bg-green-400 text-white rounded-lg px-3 py-1  cursor-pointer"
+                        (click)="play(5,6)">
+                        5x6
+                    </div>
+                </td>
+                <td>
+                    <div class="text-center bg-green-400 text-white rounded-lg px-3 py-1  cursor-pointer"
+                        (click)="play(5,8)">
+                        5x8
+                    </div>
+                </td>
+            </tr>
+            <tr class="h-10">
+                <td class="w-32">Medium</td>
+                <td>
+                    <div class="text-center bg-green-400 text-white rounded-lg px-3 py-1  cursor-pointer"
+                        (click)="play(6,9)">
+                        6x9
+                    </div>
+                </td>
+                <td>
+                    <div class="text-center bg-green-400 text-white rounded-lg px-3 py-1  cursor-pointer"
+                        (click)="play(6,10)">
+                        6x10
+                    </div>
+                </td>
+                <td>
+                    <div class="text-center bg-green-400 text-white rounded-lg px-3 py-1  cursor-pointer"
+                        (click)="play(7,8)">
+                        7x8
+                    </div>
+                </td>
+                <td>
+                    <div class="text-center bg-green-400 text-white rounded-lg px-3 py-1  cursor-pointer"
+                        (click)="play(8,10)">
+                        8x10
+                    </div>
+                </td>
+            </tr>
+            <tr class="h-10">
+                <td class="w-32">Hard</td>
+                <td>
+                    <div class="text-center bg-green-400 text-white rounded-lg px-3 py-1  cursor-pointer"
+                        (click)="play(8,11)">
+                        8x11
+                    </div>
+                </td>
+                <td>
+                    <div class="text-center bg-green-400 text-white rounded-lg px-3 py-1  cursor-pointer"
+                        (click)="play(8,12)">
+                        8x12
+                    </div>
+                </td>
+                <td>
+                    <div class="text-center bg-green-400 text-white rounded-lg px-3 py-1  cursor-pointer"
+                        (click)="play(8,14)">
+                        8x14
+                    </div>
+                </td>
+                <td>
+                    <div class="text-center bg-green-400 text-white rounded-lg px-3 py-1  cursor-pointer"
+                        (click)="play(8,16)">
+                        8x16
+                    </div>
+                </td>
+            </tr>
+            <tr class="h-10">
+                <td class="w-32">Hardest</td>
+                <td>
+                    <div class="text-center bg-green-400 text-white rounded-lg px-3 py-1 cursor-pointer"
+                        (click)="play(8,18)">
+                        8x18
+                    </div>
+                </td>
+            </tr>
+        </table>
 
 
         <div class="flex items-center justify-center mt-8">
@@ -60,5 +111,4 @@
             </div>
         </div>
     </div>
-
 </div>

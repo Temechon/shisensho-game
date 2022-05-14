@@ -104,6 +104,7 @@ export class GameComponent {
 
     this.replaypopup.hide();
     this.shufflepopup.hide();
+    this.newgamepopup.hide();
 
     // Reset game ui
     this.totalCorrectMoves = 0;
@@ -118,6 +119,8 @@ export class GameComponent {
 
   newgame($event: { rows: number, cols: number }) {
 
+    console.log("new game here");
+
     this.size.rows = $event.rows;
     this.size.cols = $event.cols;
 
@@ -131,7 +134,6 @@ export class GameComponent {
 
     this.replaypopup.hide();
     this.shufflepopup.hide();
-    this.newgamepopup.hide();
 
     // Reset game ui
     this.totalCorrectMoves = 0;

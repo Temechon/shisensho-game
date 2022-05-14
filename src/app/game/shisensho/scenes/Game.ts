@@ -37,17 +37,15 @@ export class Game extends Phaser.Scene {
         grid.x = w / 2;
         grid.y = h / 2 + 45;
 
+        console.log("max path", Solver.GetMaxPath(grid));
+
+
         // Combo bar
         let combobar = new Combobar(this, grid.widthPx * grid.scale * 1.1);
         combobar.x = w / 2;
         combobar.y = 75
         this.add.existing(combobar);
-        combobar.setProgress(1)
-
-        // Start the combo bar at the first correct move
-        this.game.events.on(Constants.EVENTS.CORRECT_MOVE_DONE, () => {
-            combobar.start();
-        })
+        combobar.setProgress(0)
 
         // Pause the combo bar when shuffling
         this.game.events.on(Constants.EVENTS.SHUFFLING, () => {
@@ -59,7 +57,7 @@ export class Game extends Phaser.Scene {
             this.time.addEvent({
                 delay: 500,
                 callback: () => {
-                    combobar.start();
+                    combobar.resume();
                 }
             })
         })
@@ -88,6 +86,10 @@ export class Game extends Phaser.Scene {
         this.game.events.on(Constants.EVENTS.CORRECT_MOVE_DONE, (t1: Tile, t2: Tile) => {
 
             let score = 100 * combobar.multiplier;
+
+            // Start the combo bar at the first correct move
+            combobar.reset();
+
 
             const colorHex = randomColor({ luminosity: 'light', format: 'hex' })
 
@@ -123,9 +125,6 @@ export class Game extends Phaser.Scene {
 
             // Add score
             this.score += score;
-
-            // Reset combo bar
-            combobar.reset();
 
             this.game.events.emit(Constants.EVENTS.ADD_SCORE, score);
         })
