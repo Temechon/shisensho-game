@@ -18,6 +18,6 @@ export abstract class Constants {
 
         ADD_SCORE: "add:score",
 
-        COMBO_BREAK: "combo:break"
+        COMBO_UPDATE: "combo:update"
     }
 }

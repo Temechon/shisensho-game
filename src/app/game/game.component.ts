@@ -75,11 +75,10 @@ export class GameComponent {
     this.phaserGame.events.on(Constants.EVENTS.ADD_SCORE, (deltascore: number) => {
       this.score += deltascore;
     })
-    this.phaserGame.events.on(Constants.EVENTS.COMBO_BREAK, (combo: number) => {
+    this.phaserGame.events.on(Constants.EVENTS.COMBO_UPDATE, (combo: number) => {
       if (this.bestcombo < combo) {
         this.bestcombo = combo;
         console.log("Best combo !!", this.bestcombo);
-
       }
     });
   }

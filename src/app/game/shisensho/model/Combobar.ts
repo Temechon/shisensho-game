@@ -52,7 +52,7 @@ export class Combobar extends Phaser.GameObjects.Container {
     }
 
     resetComboStrike() {
-        this.scene.game.events.emit(Constants.EVENTS.COMBO_BREAK, this.combostrike);
+        this.scene.game.events.emit(Constants.EVENTS.COMBO_UPDATE, this.combostrike);
         this.combostrike = 0;
     }
 
@@ -62,6 +62,7 @@ export class Combobar extends Phaser.GameObjects.Container {
      */
     reset() {
         this.combostrike++;
+        this.scene.game.events.emit(Constants.EVENTS.COMBO_UPDATE, this.combostrike);
         this.setProgress(1);
         this.animation.restart();
         this.visible = true;
