@@ -11,6 +11,10 @@ export class Boot extends Phaser.Scene {
         this.load.image('star', 'assets/star.png');
 
         this.load.atlas('tiles', 'assets/tiles.png', 'assets/tiles.json');
+
+        this.load.audio('correct_move', 'assets/correct_move.wav');
+        this.load.audio('incorrect_move', 'assets/incorrect_move.wav');
+        this.load.audio('finished', 'assets/finished.wav');
         // this.load.bitmapFont('font_normal', 'assets/fonts/font_normal.png', 'assets/fonts/font_normal.xml');
 
     }

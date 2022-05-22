@@ -15,7 +15,7 @@ export class Game extends Phaser.Scene {
 
     seconds: number = 0;
     score = 0;
-    size: { rows: number, cols: number } = { rows: 2, cols: 2 };
+    size: { rows: number, cols: number } = { rows: 6, cols: 9 };
 
     init(data: { rows: number, cols: number }) {
         if (data.rows) {
@@ -27,6 +27,9 @@ export class Game extends Phaser.Scene {
         this.seconds = 0;
         this.score = 0;
 
+        this.sound.volume = 0.25;
+
+        // Get canvas element
         let w = window.innerWidth - 18;
         let h = window.innerHeight;
 
@@ -86,6 +89,7 @@ export class Game extends Phaser.Scene {
 
         this.game.events.on(Constants.EVENTS.GAME_FINISHED, () => {
             combobar.stop();
+            this.sound.play('finished');
             this.scene.launch('end', {
                 rows: grid.size.rows, cols: grid.size.cols, tilesNames: grid.tilesNames
             });
@@ -93,9 +97,12 @@ export class Game extends Phaser.Scene {
 
         this.game.events.on(Constants.EVENTS.INCORRECT_MOVE_DONE, (t1: Tile, t2: Tile) => {
             combobar.stop();
+            this.sound.play('incorrect_move');
         })
 
         this.game.events.on(Constants.EVENTS.CORRECT_MOVE_DONE, (t1: Tile, t2: Tile) => {
+
+            this.sound.play('correct_move');
 
             let score = 100 * combobar.multiplier;
 
@@ -144,37 +151,47 @@ export class Game extends Phaser.Scene {
             this.game.events.emit(Constants.EVENTS.ADD_SCORE, score);
         })
 
+
+        // On 'ad' event, resize the game to fit 2/3 of the screen.
+        // TODO
+        // this.game.events.on(Constants.EVENTS.AD_DISPLAYED, () => {
+        // combobar.stop();
+        // this.scene.launch('end', {
+        //     rows: grid.size.rows, cols: grid.size.cols, tilesNames: grid.tilesNames
+        // });
+        // });
+
         let graphics: Phaser.GameObjects.Graphics;
 
         // Debug - Shuffle the board
-        this.input.keyboard.on('keydown-A', () => {
+        // this.input.keyboard.on('keydown-A', () => {
 
-            if (graphics) {
-                graphics.destroy();
-            }
+        //     if (graphics) {
+        //         graphics.destroy();
+        //     }
 
-            grid.shuffleboard();
+        //     grid.shuffleboard();
 
-            grid.doForAllTiles(t => t.hideImage());
+        //     grid.doForAllTiles(t => t.hideImage());
 
-            this.time.addEvent({
-                delay: 500,
-                callback: () => {
-                    grid.updateBoard();
-                    grid.doForAllTiles(t => t.showImage());
-                }
-            })
-        })
+        //     this.time.addEvent({
+        //         delay: 500,
+        //         callback: () => {
+        //             grid.updateBoard();
+        //             grid.doForAllTiles(t => t.showImage());
+        //         }
+        //     })
+        // })
 
-        // Debug - Find a grid with no shuffle
-        this.input.keyboard.on('keydown-R', () => {
+        // // Debug - Find a grid with no shuffle
+        // this.input.keyboard.on('keydown-R', () => {
 
-            while (Solver.Solve(grid) === null) {
-                console.log("Shuffling");
-                grid.shuffleboard();
-            }
-            grid.updateBoard();
-        })
+        //     while (Solver.Solve(grid) === null) {
+        //         console.log("Shuffling");
+        //         grid.shuffleboard();
+        //     }
+        //     grid.updateBoard();
+        // })
 
         // Display hint
         this.game.events.on(Constants.EVENTS.SHOW_HINT, () => {

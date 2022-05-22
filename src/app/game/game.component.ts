@@ -42,7 +42,7 @@ export class GameComponent {
   bestcombo = 0;
 
   /** The board size */
-  size = { rows: 2, cols: 2 };
+  size = { rows: 6, cols: 9 };
 
   ngAfterViewInit() {
     this.initGame();
