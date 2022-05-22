@@ -51,6 +51,7 @@ export class GameComponent {
   private initGameEvents() {
     this.phaserGame.events.on(Constants.EVENTS.GAME_FINISHED, () => {
       this.replaypopup.show({
+        gamenumber: 0, // Will be set in the replay popup
         score: this.score,
         totalTiles: this.size.cols * this.size.rows,
         totalMoves: this.totalMoves,
@@ -91,9 +92,9 @@ export class GameComponent {
       type: Phaser.AUTO,
       backgroundColor: '#78D9B2',
       scale: {
-        mode: Phaser.Scale.FIT,
-        width: window.innerWidth + 15,
-        height: window.innerHeight + 15,
+        mode: Phaser.Scale.NONE,
+        width: window.innerWidth - 18,
+        height: window.innerHeight,
       },
       scene: [
         Boot,

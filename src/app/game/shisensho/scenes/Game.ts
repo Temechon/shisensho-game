@@ -5,6 +5,7 @@ import { Solver } from "../model/Solver";
 import { Tile } from "../model/Tile";
 import { Toast } from "../model/Toast";
 import randomColor from "randomcolor";
+import { bounds } from "../scenes/Boot";
 
 export class Game extends Phaser.Scene {
 
@@ -26,8 +27,8 @@ export class Game extends Phaser.Scene {
         this.seconds = 0;
         this.score = 0;
 
-        let w = this.game.config.width as number;
-        let h = this.game.config.height as number;
+        let w = window.innerWidth - 18;
+        let h = window.innerHeight;
 
         this.input.mouse.preventDefaultWheel = false;
 
@@ -37,8 +38,19 @@ export class Game extends Phaser.Scene {
         grid.x = w / 2;
         grid.y = h / 2 + 45;
 
-        console.log("max path", Solver.GetMaxPath(grid));
 
+        window.addEventListener('resize', () => {
+
+            let gamesize = { width: window.innerWidth - 18, height: window.innerHeight }
+            this.scale.resize(gamesize.width, gamesize.height);
+            bounds.width = gamesize.width;
+            bounds.height = gamesize.height;
+            grid.resize();
+            grid.x = gamesize.width / 2;
+            grid.y = gamesize.height / 2 + 45;
+        })
+
+        console.log("max path", Solver.GetMaxPath(grid));
 
         // Combo bar
         let combobar = new Combobar(this, grid.widthPx * grid.scale * 1.1);
@@ -93,12 +105,15 @@ export class Game extends Phaser.Scene {
 
             const colorHex = randomColor({ luminosity: 'light', format: 'hex' })
 
+            let emoticons = ['💪', '👊', '✨', '😎', '🤩', '✌', '👌', '🙌', '💥', '💎', '🚀', '⭐', '🌟', '🔥', '⚡', '🌈', '✔️']
+            let randomEmoticon = Phaser.Math.RND.pick(emoticons);
+
             // Create score toast at t1 position
             let toast = new Toast(this, {
-                text: `+ ${score}!`,
+                text: `+ ${score}! ${randomEmoticon}`,
                 color: colorHex
             });
-            toast.displayAt(t1.x + grid.x, t1.y + grid.y);
+            toast.displayAt(grid.x, grid.y);
             toast.depth = 10;
 
             let messagesByLevel = [
@@ -119,7 +134,7 @@ export class Game extends Phaser.Scene {
                     color: colorHex
                 });
                 // combomessage.displayAt(w / 2, 100);
-                combomessage.displayAt(t1.x + grid.x, t1.y + grid.y + 100);
+                combomessage.displayAt(grid.x, grid.y + 100);
                 combomessage.depth = 10;
             }
 

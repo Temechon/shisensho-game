@@ -2,16 +2,17 @@
     class=" z-10 hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border px-4 py-2 min-w-[65%] bg-white rounded-md shadow-md flex-col items-center">
     <!-- Title -->
     <div class="font-extrabold text-3xl uppercase ">
-        Congrats!
+        🔥 Congrats! 🔥
     </div>
     <!-- Subtitle -->
     <div class="text-lg text-gray-400">
-        You just completed the board!
+        You just completed the board! ✨
     </div>
 
     <!-- Score -->
     <table class="w-11/12 m-auto border my-4">
         <tr class="font-semibold bg-board-purple text-white text-center">
+            <td>Game #</td>
             <td>Time</td>
             <td>Number of tiles</td>
             <td>Moves</td>
@@ -19,13 +20,15 @@
             <td>Best combo</td>
             <td>Score</td>
         </tr>
-        <tr class="text-center">
-            <td>{{inputData?.time}}</td>
-            <td>{{inputData?.totalTiles}}</td>
-            <td>{{inputData?.totalMoves}}</td>
-            <td>{{inputData?.totalMoves - inputData?.totalCorrectMoves}}</td>
-            <td>{{inputData?.bestcombo}}</td>
-            <td>{{inputData?.score}}</td>
+        <tr [ngClass]="{'!bg-board-green text-green-700 font-semibold border h-12' : index==currentGameIndex}"
+            class="text-center odd:bg-gray-200 py-1" *ngFor="let score of scores; let index=index;">
+            <td>{{score.gamenumber}}</td>
+            <td>{{score.time}}</td>
+            <td>{{score.totalTiles}}</td>
+            <td>{{score.totalMoves}}</td>
+            <td>{{score.totalMoves - score.totalCorrectMoves}}</td>
+            <td>{{score.bestcombo}}</td>
+            <td>{{score.score}}</td>
         </tr>
     </table>
 

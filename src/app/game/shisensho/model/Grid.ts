@@ -114,16 +114,7 @@ export class Grid extends Phaser.GameObjects.Container {
             tileHeight: this.tileHeight
         }, this.size)
 
-
         this.shuffleboard();
-        // Threshold : The number of possible moves this grid should have to be displayed (to avoid grid with only one move)
-        const thresholdToShuffle = this.size.cols * this.size.rows / 4
-        // Ideal ratio : the number of possible moves is equal to the number of pairs of tiles.
-        const idealRatio = this.size.cols / this.size.rows / 2;
-
-        while (Solver.GetMaxPath(this).length < thresholdToShuffle) {
-            this.shuffleboard();
-        }
         this.updateBoard();
 
         // Animate all tiles to their positions
@@ -151,6 +142,14 @@ export class Grid extends Phaser.GameObjects.Container {
         this.each((tile: Tile) => {
             tile.on('pointerdown', this.onPointerDown.bind(this, tile));
         })
+    }
+
+    resize() {
+
+        this.scale = getBestScaleForTiles({
+            tileWidth: this.tileWidth,
+            tileHeight: this.tileHeight
+        }, this.size)
     }
 
     selectedTiles: Array<Tile> = [];
@@ -316,7 +315,7 @@ export class Grid extends Phaser.GameObjects.Container {
         for (let row of this.tiles) {
             let rowString = [];
             for (let tile of row) {
-                rowString.push(tile.tileid);
+                rowString.push(tile?.tileid);
             }
             strings.push(rowString);
         }
@@ -406,11 +405,21 @@ export class Grid extends Phaser.GameObjects.Container {
      */
     public shuffleboard(update: boolean = false) {
         this._shuffleboard();
-        let hint = this.getHints(false);
-        while (hint.length === 0) {
-            this._shuffleboard();
-            hint = this.getHints(false);
+
+        // Threshold : The number of possible moves this grid should have to be displayed (to avoid grid with only one move)
+        const thresholdToShuffle = Math.min(10, this.size.cols * this.size.rows / 4);
+        // Ideal ratio : the number of possible moves is equal to the number of pairs of tiles.
+        const idealRatio = this.size.cols / this.size.rows / 2;
+
+        while (Solver.GetMaxPath(this).length < thresholdToShuffle) {
+            this.shuffleboard();
         }
+
+        // let hint = this.getHints(false);
+        // while (hint.length === 0) {
+        //     this._shuffleboard();
+        //     hint = this.getHints(false);
+        // }
         if (update) {
             this.updateBoard();
         }

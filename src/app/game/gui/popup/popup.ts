@@ -33,6 +33,7 @@ export abstract class Popup {
         let popup = this.popup.nativeElement as HTMLDivElement;
         popup.classList.remove('hidden');
         popup.classList.add('flex');
+        this.onShow();
     }
 
     public hide() {
@@ -45,4 +46,8 @@ export abstract class Popup {
         this.hide();
         this.onClose.emit();
     }
+
+    protected onShow() {
+        // Should be overridden in subclasses
+    };
 }

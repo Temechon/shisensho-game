@@ -33,7 +33,7 @@ export class Combobar extends Phaser.GameObjects.Container {
         this.add(this.bot);
         this.add(this.top);
 
-        // this.visible = false;
+        this.visible = false;
 
         this.animation = this.scene.tweens.addCounter({
             from: 1,
